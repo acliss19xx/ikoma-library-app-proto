@@ -7,45 +7,10 @@
     <title>生駒市図書館アプリ by CODE for IKOMA</title>
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css"> <!-- http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css -->
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/slick.css"/> <!-- http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css -->
+    <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick-theme.css"/>
     <script src="/javascripts/jquery-1.11.3.min.js"></script> <!-- http://code.jquery.com/jquery-1.11.3.min.js -->
-    <script type="text/javascript">
-var initialize = function() {
-    $("#main").append("<p><input type=\"button\" id=\"SelectLibrary\" value=\"図書館を選ぶ\" onClick=\"onSelectLibrary()\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"SelectGenre\" value=\"ジャンルを選ぶ\" onClick=\"onSelectGenre()\"></p>");
-    $("input").button().click(function(event) {	event.preventDefault(); });
-};
-
-var returnFromLibraries = function() {
-    $("#main").children().remove();
-    initialize();
-    $('.hamburger.is-open').click();
-};
-
-var createLibraries = function() {
-    $("#main").append("<p><input type=\"button\" id=\"return\" value=\"戻る\" onClick=\"returnFromLibraries()\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"ekimae\" value=\"生駒駅前図書室\" onClick=\"\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"kita\" value=\"北分館\" onClick=\"\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"minami\" value=\"南分館\" onClick=\"\"></p>");
-};
-
-var onSelectLibrary = function() {
-    $("#SelectLibrary").remove();
-    $("#SelectGenre").remove();
-    createLibraries();
-    $("input").button().click(function(event) {	event.preventDefault(); });
-};
-
-var settings = function() {
-    $("#main").children().remove();
-    $("#main").append("<p><input type=\"button\" id=\"return\" value=\"表示形式\" onClick=\"\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"return\" value=\"データの保存先\" onClick=\"\"></p>");
-    $('.hamburger.is-open').click();
-};
-
-$(function() {
-    initialize();
-});
-    </script>
+    <script type="text/javascript" src="/javascripts/main.js"></script>
   </head>
 
   <body>
@@ -70,6 +35,14 @@ $(function() {
             <div class="col-lg-8 col-lg-offset-2">
 	      <div id="main">
               </div>
+	      <div id="result">
+		<div class="book-list">
+		  <div class="book" style="background-color: #ffccff;">one</div>
+		  <div class="book" style="background-color: #ccffcc;">two</div>
+		  <div class="book" style="background-color: #66ffff;">three</div>
+		  <div class="book" style="background-color: #ffff99;">four</div>
+		</div>
+	      </div>
 	    </div>
 	  </div>
 	</div>
@@ -77,37 +50,10 @@ $(function() {
 	
       </div>
       <!-- /#wrapper --> 
-    <script src="/javascripts/bootstrap.min.js"></script> <!-- http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js -->
-    <script>
-$(document).ready(function () {
-    var trigger = $('.hamburger'),
-	overlay = $('.overlay'),
-	isClosed = false;
-
-    trigger.click(function () {
-	hamburger_cross();      
-    });
-
-    function hamburger_cross() {
-
-	if (isClosed == true) {          
-	    overlay.hide();
-	    trigger.removeClass('is-open');
-	    trigger.addClass('is-closed');
-	    isClosed = false;
-	} else {   
-	    overlay.show();
-	    trigger.removeClass('is-closed');
-	    trigger.addClass('is-open');
-	    isClosed = true;
-	}
-    }
-    
-    $('[data-toggle="offcanvas"]').click(function () {
-	$('#wrapper').toggleClass('toggled');
-    });  
-});
-    </script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script> <!-- http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js -->
+    <script type="text/javascript" src="/javascripts/jquery-migrate-1.2.1.min.js"></script> <!-- http://code.jquery.com/jquery-migrate-1.2.1.min.js -->
+    <script type="text/javascript" src="/javascripts/slick.min.js"></script> <!-- http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js -->
+    <script type="text/javascript" src="/javascripts/doc-ready.js"></script>
     <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
   </body>
   <footer>

@@ -312,4 +312,9 @@ body a {
 
 body a:hover { color: #ffffff; }
 
+#result {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 footer p { color: rgba(255, 255, 255, 0.7); }
