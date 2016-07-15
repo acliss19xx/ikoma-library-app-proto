@@ -1,36 +1,70 @@
-var initialize = function() {
-    $("#main").append("<p><input type=\"button\" id=\"SelectLibrary\" value=\"図書館を選ぶ\" onClick=\"onSelectLibrary()\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"SelectGenre\" value=\"ジャンルを選ぶ\" onClick=\"onSelectGenre()\"></p>");
+var clearChildren = function() {
+    var main = $("#main");
+    var result = $("#result");
+    main.children().remove();
+    result.children().remove();
+};
+
+var createOptions = function() {
+    var main = $("#main");
+    main.append("<p><input type=\"button\" id=\"SelectLibrary\" value=\"図書館を選ぶ\" onClick=\"onSelectLibrary()\"></p>");
+    main.append("<p><input type=\"button\" id=\"SelectGenre\" value=\"ジャンルを選ぶ\" onClick=\"onSelectGenre()\"></p>");
+    main.append("<p><input type=\"button\" id=\"Search\" value=\"検索\" onClick=\"searchBooks()\"></p>");
     $("input").button().click(function(event) {	event.preventDefault(); });
 };
 
-var returnFromLibraries = function() {
-    $("#main").children().remove();
-    initialize();
+var goToLibraries = function() {
+    clearChildren();
+    createOptions();
     $('.hamburger.is-open').click();
 };
 
 var createLibraries = function() {
-    $("#main").append("<p><input type=\"button\" id=\"return\" value=\"戻る\" onClick=\"returnFromLibraries()\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"ekimae\" value=\"生駒駅前図書室\" onClick=\"\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"kita\" value=\"北分館\" onClick=\"\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"minami\" value=\"南分館\" onClick=\"\"></p>");
+    var main = $("#main");
+    main.append("<p><input type=\"button\" id=\"goToLibraries\" value=\"戻る\" onClick=\"goToLibraries()\"></p>");
+    main.append("<p><input type=\"button\" id=\"ekimae\" value=\"生駒駅前図書室\" onClick=\"\"></p>");
+    main.append("<p><input type=\"button\" id=\"kita\" value=\"北分館\" onClick=\"\"></p>");
+    main.append("<p><input type=\"button\" id=\"minami\" value=\"南分館\" onClick=\"\"></p>");
 };
 
 var onSelectLibrary = function() {
+    clearChildren();
     $("#SelectLibrary").remove();
     $("#SelectGenre").remove();
+    $("#Search").remove();
     createLibraries();
     $("input").button().click(function(event) {	event.preventDefault(); });
 };
 
-var settings = function() {
-    $("#main").children().remove();
-    $("#main").append("<p><input type=\"button\" id=\"return\" value=\"表示形式\" onClick=\"\"></p>");
-    $("#main").append("<p><input type=\"button\" id=\"return\" value=\"データの保存先\" onClick=\"\"></p>");
+var onSelectGenre = function() {
+};
+
+var goToSettings = function() {
+    clearChildren();
+    var main = $("#main");
+    main.append("<p><input type=\"button\" id=\"viewStyle\" value=\"表示形式\" onClick=\"\"></p>");
+    main.append("<p><input type=\"button\" id=\"useFromMultiDevice\" value=\"マルチデバイスでの使用\" onClick=\"\"></p>");
     $('.hamburger.is-open').click();
 };
 
+var searchBooks = function() {
+    var result = $("#result");
+    result.children().remove();
+    result.append("<div class=\"book-list\"></div>");
+    var bookList = $(".book-list");
+    bookList.append("<div class=\"book\" style=\"background-color: #ffccff;\">one</div>");
+    bookList.append("<div class=\"book\" style=\"background-color: #ccffcc;\">two</div>");
+    bookList.append("<div class=\"book\" style=\"background-color: #66ffff;\">three</div>");
+    bookList.append("<div class=\"book\" style=\"background-color: #ffff99;\">four</div>");
+    $('.book-list').slick({
+	dots: true,
+	speed: 100,
+	slidesToShow: 1,
+	slidesToScroll: 1,
+	autoplay: true,
+    });
+};
+
 $(function() {
-    initialize();
+    createOptions();
 });

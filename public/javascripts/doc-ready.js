@@ -26,11 +26,4 @@ $(document).ready(function () {
 	$('#wrapper').toggleClass('toggled');
     });  
 
-    $('.book-list').slick({
-	dots: true,
-	speed: 100,
-	slidesToShow: 1,
-	slidesToScroll: 1,
-	autoplay: true,
-    });
 });
