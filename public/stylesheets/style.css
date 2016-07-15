@@ -299,7 +299,7 @@ body, html {
   z-index: 1;
 }
 
-/* SOME DEMO STYLES - NOT REQUIRED */
+/* ADJUST */
 
 body h1, body h2, body h3, body h4 { color: rgba(255, 255, 255, 0.9); }
 
@@ -315,6 +315,10 @@ body a:hover { color: #ffffff; }
 #result {
   margin-left: 20px;
   margin-right: 20px;
+}
+
+.slick-list {
+  line-height: 300px;
 }
 
 footer p { color: rgba(255, 255, 255, 0.7); }
