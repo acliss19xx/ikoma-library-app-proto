@@ -7,9 +7,9 @@ var clearChildren = function() {
 
 var createOptions = function() {
     var main = $("#main");
-    main.append("<p><input type=\"button\" id=\"SelectLibrary\" value=\"図書館を選ぶ\" onClick=\"onSelectLibrary()\"></p>");
-    main.append("<p><input type=\"button\" id=\"SelectGenre\" value=\"ジャンルを選ぶ\" onClick=\"onSelectGenre()\"></p>");
-    main.append("<p><input type=\"button\" id=\"Search\" value=\"検索\" onClick=\"searchBooks()\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"SelectLibrary\" value=\"図書館を選ぶ\" onClick=\"onSelectLibrary()\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"SelectGenre\" value=\"ジャンルを選ぶ\" onClick=\"onSelectGenre()\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"Search\" value=\"検索\" onClick=\"searchBooks()\"></p>");
     $("input").button().click(function(event) {	event.preventDefault(); });
 };
 
@@ -21,10 +21,10 @@ var goToLibraries = function() {
 
 var createLibraries = function() {
     var main = $("#main");
-    main.append("<p><input type=\"button\" id=\"goToLibraries\" value=\"戻る\" onClick=\"goToLibraries()\"></p>");
-    main.append("<p><input type=\"button\" id=\"ekimae\" value=\"生駒駅前図書室\" onClick=\"\"></p>");
-    main.append("<p><input type=\"button\" id=\"kita\" value=\"北分館\" onClick=\"\"></p>");
-    main.append("<p><input type=\"button\" id=\"minami\" value=\"南分館\" onClick=\"\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"goToLibraries\" value=\"戻る\" onClick=\"goToLibraries()\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"ekimae\" value=\"生駒駅前図書室\" onClick=\"\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"kita\" value=\"北分館\" onClick=\"\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"minami\" value=\"南分館\" onClick=\"\"></p>");
 };
 
 var onSelectLibrary = function() {
@@ -42,8 +42,8 @@ var onSelectGenre = function() {
 var goToSettings = function() {
     clearChildren();
     var main = $("#main");
-    main.append("<p><input type=\"button\" id=\"viewStyle\" value=\"表示形式\" onClick=\"\"></p>");
-    main.append("<p><input type=\"button\" id=\"useFromMultiDevice\" value=\"マルチデバイスでの使用\" onClick=\"\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"viewStyle\" value=\"表示形式\" onClick=\"\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"useFromMultiDevice\" value=\"マルチデバイスでの使用\" onClick=\"\"></p>");
     $('.hamburger.is-open').click();
 };
 
