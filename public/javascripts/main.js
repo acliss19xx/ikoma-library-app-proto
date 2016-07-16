@@ -48,7 +48,7 @@ var goToSettings = function() {
 };
 
 var searchBooks = function() {
-    var url = "https://" + location.hostname + ":3000/api/v1?publisherName=%E3%81%93%E3%81%90%E3%81%BE%E7%A4%BE";
+    var url = "https://" + location.hostname + "/api/v1?publisherName=%E3%81%93%E3%81%90%E3%81%BE%E7%A4%BE";
     $.ajax({type: "GET", url: url}).then(function(r){
 	var obj = JSON.parse(r);
 	var result = $("#result");
