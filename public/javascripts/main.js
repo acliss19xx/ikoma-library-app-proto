@@ -48,20 +48,18 @@ var goToSettings = function() {
 };
 
 var searchBooks = function() {
-    var url = "https://app.rakuten.co.jp/services/api/BooksBook/Search/20130522?" + 
-	"applicationId=XXXX&publisherName=%E3%81%93%E3%81%90%E3%81%BE%E7%A4%BE";
+    var url = "http://" + location.hostname + ":3000/api/v1?publisherName=%E3%81%93%E3%81%90%E3%81%BE%E7%A4%BE";
     $.ajax({type: "GET", url: url}).then(function(r){
-	console.log(r);
-
+	var obj = JSON.parse(r);
 	var result = $("#result");
 	result.children().remove();
 	result.append("<div class=\"book-list\"></div>");
 	var bookList = $(".book-list");
 
-	var len = r.Items.length;
+	var len = obj.Items.length;
 	for (var i = 0; i < len; i++) {
-	    bookList.append("<div class=\"book\" style=\"background-color: white;\"><img src=\"" + r.Items[i].Item.mediumImageUrl + "\">" +
-			    r.Items[i].Item.title + "</div>");
+	    bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" +
+			    obj.Items[i].title + "</div>");
 	}
 	$('.book-list').slick({
 	    dots: true,
