@@ -48,20 +48,28 @@ var goToSettings = function() {
 };
 
 var searchBooks = function() {
-    var result = $("#result");
-    result.children().remove();
-    result.append("<div class=\"book-list\"></div>");
-    var bookList = $(".book-list");
-    bookList.append("<div class=\"book\" style=\"background-color: #ffccff;\">one</div>");
-    bookList.append("<div class=\"book\" style=\"background-color: #ccffcc;\">two</div>");
-    bookList.append("<div class=\"book\" style=\"background-color: #66ffff;\">three</div>");
-    bookList.append("<div class=\"book\" style=\"background-color: #ffff99;\">four</div>");
-    $('.book-list').slick({
-	dots: true,
-	speed: 100,
-	slidesToShow: 1,
-	slidesToScroll: 1,
-	autoplay: true,
+    var url = "https://app.rakuten.co.jp/services/api/BooksBook/Search/20130522?" + 
+	"applicationId=XXXX&publisherName=%E3%81%93%E3%81%90%E3%81%BE%E7%A4%BE";
+    $.ajax({type: "GET", url: url}).then(function(r){
+	console.log(r);
+
+	var result = $("#result");
+	result.children().remove();
+	result.append("<div class=\"book-list\"></div>");
+	var bookList = $(".book-list");
+
+	var len = r.Items.length;
+	for (var i = 0; i < len; i++) {
+	    bookList.append("<div class=\"book\" style=\"background-color: white;\"><img src=\"" + r.Items[i].Item.mediumImageUrl + "\">" +
+			    r.Items[i].Item.title + "</div>");
+	}
+	$('.book-list').slick({
+	    dots: true,
+	    speed: 100,
+	    slidesToShow: 1,
+	    slidesToScroll: 1,
+	    autoplay: true,
+	});
     });
 };
 
