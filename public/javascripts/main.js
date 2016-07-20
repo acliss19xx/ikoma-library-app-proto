@@ -49,6 +49,7 @@ var goToSettings = function() {
 };
 
 var searchBooks = function() {
+    var vs = localStorage.getItem('viewStyle');
     var url = "https://" + location.hostname + "/api/v1?publisherName=%E3%81%93%E3%81%90%E3%81%BE%E7%A4%BE";
     $.ajax({type: "GET", url: url}).then(function(r){
 	var obj = JSON.parse(r);
@@ -59,16 +60,21 @@ var searchBooks = function() {
 
 	var len = obj.Items.length;
 	for (var i = 0; i < len; i++) {
-	    bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" +
-			    obj.Items[i].title + "</div>");
+	    if (vs == 'カルーセル') {
+		bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div>");
+	    } else if (vs == 'タイル') {
+		bookList.append("<img src=\"" + obj.Items[i].mediumImageUrl + "\">");
+	    }
 	}
-	$('.book-list').slick({
-	    dots: true,
-	    speed: 100,
-	    slidesToShow: 1,
-	    slidesToScroll: 1,
-	    autoplay: true,
-	});
+	if (localStorage.getItem('viewStyle') == 'カルーセル') {
+	    $('.book-list').slick({
+		dots: true,
+		speed: 100,
+		slidesToShow: 1,
+		slidesToScroll: 1,
+		autoplay: true,
+	    });
+	}
     });
 };
 
