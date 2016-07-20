@@ -42,7 +42,8 @@ var onSelectGenre = function() {
 var goToSettings = function() {
     clearChildren();
     var main = $("#main");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"viewStyle\" value=\"表示形式\" onClick=\"\"></p>");
+    main.append("<p><div class=\"dropdown\"><button id=\"viewStyle\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setViewStyle('タイル')\">タイル</a></li><li><a href=\"#\" onClick=\"setViewStyle('カルーセル')\">カルーセル</a></li></ul></div></p>");
+    setViewStyle(localStorage.getItem('viewStyle'));
     main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"useFromMultiDevice\" value=\"マルチデバイスでの使用\" onClick=\"\"></p>");
     $('.hamburger.is-open').click();
 };
@@ -71,6 +72,14 @@ var searchBooks = function() {
     });
 };
 
+var setViewStyle = function(s) {
+    localStorage.setItem('viewStyle', s);
+    $("#viewStyle").text('表示形式:' + s);
+    $("#viewStyle").append('<span class="caret">')
+};
+
 $(function() {
+    var vs = localStorage.getItem('viewStyle');
+    if (vs == "null") { localStorage.setItem('viewStyle', 'カルーセル'); }
     createOptions();
 });
