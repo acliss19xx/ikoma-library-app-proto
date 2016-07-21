@@ -60,8 +60,8 @@ var searchBooks = function() {
 
 	var len = obj.Items.length;
 	for (var i = 0; i < len; i++) {
-	    if (vs == 'カルーセル') {
-		bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div></p>");
+	    if (vs == 'ノーマル') {
+		bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
 	    } else if (vs == 'タイル') {
 		bookList.append("<img src=\"" + obj.Items[i].mediumImageUrl + "\">");
 	    } else if (vs == 'カルーセル') {
