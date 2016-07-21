@@ -5,38 +5,32 @@ var clearChildren = function() {
     result.children().remove();
 };
 
-var createOptions = function() {
+var createSearch = function() {
     var main = $("#main");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"SelectLibrary\" value=\"図書館を選ぶ\" onClick=\"onSelectLibrary()\"></p>");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"SelectGenre\" value=\"ジャンルを選ぶ\" onClick=\"onSelectGenre()\"></p>");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"Search\" value=\"検索\" onClick=\"searchBooks()\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"SearchOptions\" value=\"検索条件\" onClick=\"onSearchOptions()\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"Search\" value=\"検索\" onClick=\"onSearch()\"></p>");
     $("input").button().click(function(event) {	event.preventDefault(); });
 };
 
-var goToLibraries = function() {
+var goToSearch = function() {
     clearChildren();
-    createOptions();
+    createSearch();
     $('.hamburger.is-open').click();
 };
 
-var createLibraries = function() {
+var createSearchOptions = function() {
     var main = $("#main");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"goToLibraries\" value=\"戻る\" onClick=\"goToLibraries()\"></p>");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"ekimae\" value=\"生駒駅前図書室\" onClick=\"\"></p>");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"kita\" value=\"北分館\" onClick=\"\"></p>");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"minami\" value=\"南分館\" onClick=\"\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"goToSearch\" value=\"戻る\" onClick=\"goToSearch()\">");
+    main.append("<p><div class=\"dropdown\"><button id=\"optionLibraries\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionLibraries('本館')\">本館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('駅前')\">駅前</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('北館')\">北館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('南館')\">南館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('鹿ノ台')\">鹿ノ台</a></li></ul></div></p>");
+    setOptionLibraries(localStorage.getItem('optionLibraries'));
 };
 
-var onSelectLibrary = function() {
+var onSearchOptions = function() {
     clearChildren();
-    $("#SelectLibrary").remove();
-    $("#SelectGenre").remove();
+    $("#SearchOptions").remove();
     $("#Search").remove();
-    createLibraries();
+    createSearchOptions();
     $("input").button().click(function(event) {	event.preventDefault(); });
-};
-
-var onSelectGenre = function() {
 };
 
 var goToSettings = function() {
@@ -48,9 +42,9 @@ var goToSettings = function() {
     $('.hamburger.is-open').click();
 };
 
-var searchBooks = function() {
+var onSearch = function() {
     var vs = localStorage.getItem('viewStyle');
-    var url = "https://" + location.hostname + "/api/v1?publisherName=%E3%81%93%E3%81%90%E3%81%BE%E7%A4%BE";
+    var url = "http://" + location.hostname + ":3000/api/v1?publisherName=%E3%81%93%E3%81%90%E3%81%BE%E7%A4%BE";
     $.ajax({type: "GET", url: url}).then(function(r){
 	var obj = JSON.parse(r);
 	var result = $("#result");
@@ -86,8 +80,14 @@ var setViewStyle = function(s) {
     $("#viewStyle").append('<span class="caret">')
 };
 
+var setOptionLibraries = function(s) {
+    localStorage.setItem('optionLibraries', s);
+    $("#optionLibraries").text('借りる図書館:' + s);
+    $("#optionLibraries").append('<span class="caret">')
+};
+
 $(function() {
     var vs = localStorage.getItem('viewStyle');
     if (vs == "null") { localStorage.setItem('viewStyle', 'カルーセル'); }
-    createOptions();
+    createSearch();
 });
