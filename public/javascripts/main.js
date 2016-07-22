@@ -26,15 +26,20 @@ var goToSearch = function() {
 
 var createSearchOptions = function() {
     var main = $("#main");
+    var libraries = localStorage.getItem('optionLibraries');
+    if (libraries == null) libraries = '本館';
     var title = localStorage.getItem('optionTitle');
+    if (title == null) title = '';
     var author = localStorage.getItem('optionAuthor');
+    if (author == null)  author = '';
     var publisherName = localStorage.getItem('optionPublisherName');
+    if (publisherName == null) publisherName = '';
     main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"goToSearch\" value=\"戻る\" onClick=\"setSearchOptions(); goToSearch()\">");
     main.append("<p><div class=\"dropdown\"><button id=\"optionLibraries\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionLibraries('本館')\">本館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('駅前')\">駅前</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('北館')\">北館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('南館')\">南館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('鹿ノ台')\">鹿ノ台</a></li></ul></div></p>");
     main.append("<p><input type=\"text\" id=\"optionTitle\" class=\"form-control\" placeholder=\"書名\" value=\"" + title + "\"></p>");
     main.append("<p><input type=\"text\" id=\"optionAuthor\" class=\"form-control\" placeholder=\"著者名\" value=\"" + author + "\"></p>");
     main.append("<p><input type=\"text\" id=\"optionPublisherName\" class=\"form-control\" placeholder=\"出版社\" value=\"" + publisherName + "\"></p>");
-    setOptionLibraries(localStorage.getItem('optionLibraries'));
+    setOptionLibraries(libraries);
 };
 
 var onSearchOptions = function() {
@@ -117,6 +122,6 @@ var setOptionLibraries = function(s) {
 
 $(function() {
     var vs = localStorage.getItem('viewStyle');
-    if (vs == "null") { localStorage.setItem('viewStyle', 'カルーセル'); }
+    if (vs == null) { localStorage.setItem('viewStyle', 'タイル'); }
     createSearch();
 });
