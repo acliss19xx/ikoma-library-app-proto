@@ -12,6 +12,7 @@ router.get('/', function(req, res, next) {
 	method: 'GET'
     };
     https.request(options, function(r) {
+	console.log('options.path: ' + options.path);
 	//console.log('STATUS: ' + r.statusCode);
 	//console.log('HEADERS: ' + JSON.stringify(r.headers));
 	r.setEncoding('utf8');
@@ -22,11 +23,15 @@ router.get('/', function(req, res, next) {
 	r.on('end', function() {
 	    var ret = {"Items": []};
 	    var body = JSON.parse(json);
-	    ret.Items = new Array(body.Items.length);
-	    for (i = 0; i < body.Items.length; i++) {
-		ret.Items[i] = {title: body.Items[i].Item.title, mediumImageUrl: body.Items[i].Item.mediumImageUrl};
+	    if (typeof body.Items === 'undefined') {
+		res.send('none');
+	    } else {
+		ret.Items = new Array(body.Items.length);
+		for (i = 0; i < body.Items.length; i++) {
+		    ret.Items[i] = {title: body.Items[i].Item.title, mediumImageUrl: body.Items[i].Item.mediumImageUrl};
+		}
+		res.json(util.format('%j', ret));
 	    }
-	    res.json(util.format('%j', ret));
 	});
     }).end();
 });
