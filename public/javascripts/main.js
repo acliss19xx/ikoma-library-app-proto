@@ -9,6 +9,7 @@ var createSearch = function() {
     var main = $("#main");
     main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"SearchOptions\" value=\"検索条件\" onClick=\"onSearchOptions()\"></p>");
     main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"Search\" value=\"検索\" onClick=\"onSearch()\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"SearchForCache\" value=\"検索(キャッシュ用)\" onClick=\"onSearchForCache()\"></p>");
     $("input").button().click(function(event) {	event.preventDefault(); });
 };
 
@@ -107,6 +108,15 @@ var onSearch = function() {
 	}
     });
 };
+
+var onSearchForCache = function() {
+    var result = $("#result");
+    result.children().remove();
+    result.append("<div class=\"book-list\"></div>");
+    var bookList = $(".book-list");
+    bookList.append("<p>あかちゃんだってえほんだいすき！ ０．１．２さいのえほんリスト<br><div class=\"book\"><img src=\"images/for_baby.png\"></div></p>");
+    bookList.append("<p>中学生本よもよもガイド<br><div class=\"book\"><img src=\"images/for_middle_school_student.png\"></div></p>");
+}
 
 var setViewStyle = function(s) {
     localStorage.setItem('viewStyle', s);
