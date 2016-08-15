@@ -7,8 +7,6 @@ var clearChildren = function() {
 
 var createSearch = function() {
     var main = $("#main");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"BtnSearchOptions\" value=\"検索条件\" onClick=\"onSearchOptions()\"></p>");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"BtnSearch\" value=\"検索\" onClick=\"onSearch()\"></p>");
     $("input").button().click(function(event) {	event.preventDefault(); });
 };
 
@@ -22,6 +20,7 @@ var goToSearch = function() {
     clearChildren();
     createSearch();
     $('.hamburger.is-open').click();
+    onSearch();
 };
 
 var createSearchOptions = function() {
@@ -53,10 +52,19 @@ var onSearchOptions = function() {
 var goToSettings = function() {
     clearChildren();
     var main = $("#main");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"BtnSearchOptions\" value=\"検索条件\" onClick=\"onSearchOptions()\"></p>");
     main.append("<p><div class=\"dropdown\"><button id=\"viewStyle\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setViewStyle('ノーマル')\">ノーマル</a></li><li><a href=\"#\" onClick=\"setViewStyle('タイル')\">タイル</a></li><li><a href=\"#\" onClick=\"setViewStyle('カルーセル')\">カルーセル</a></li></ul></div></p>");
     setViewStyle(localStorage.getItem('viewStyle'));
     main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"useFromMultiDevice\" value=\"マルチデバイスでの使用\" onClick=\"\"></p>");
     $('.hamburger.is-open').click();
+};
+
+var goToDetail = function(obj) {
+    clearChildren();
+    var main = $("#main");
+    var title = obj.getAttribute('alt');
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"BtnReturn\" value=\"一覧に戻る\" onClick=\"goToSearch()\"></p>");
+    main.append("<p><img src=\"blank\" alt=\"" + title + "\" align=\"top\">" + title + "</p>");
 };
 
 var onSearch = function() {
@@ -91,7 +99,7 @@ var onSearch = function() {
 		    if (vs == 'ノーマル') {
 			bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
 		    } else if (vs == 'タイル') {
-			bookList.append("<img src=\"" + obj.Items[i].mediumImageUrl + "\">");
+			bookList.append("<input type=\"image\" src=\"" + obj.Items[i].mediumImageUrl + "\" alt=\"" + obj.Items[i].title + "\" onClick=\"goToDetail(this)\"></input>");
 		    } else if (vs == 'カルーセル') {
 			bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div>");
 		    }
