@@ -7,8 +7,8 @@ var clearChildren = function() {
 
 var createSearch = function() {
     var main = $("#main");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"SearchOptions\" value=\"検索条件\" onClick=\"onSearchOptions()\"></p>");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"Search\" value=\"検索\" onClick=\"onSearch()\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"BtnSearchOptions\" value=\"検索条件\" onClick=\"onSearchOptions()\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"BtnSearch\" value=\"検索\" onClick=\"onSearch()\"></p>");
     $("input").button().click(function(event) {	event.preventDefault(); });
 };
 
@@ -34,18 +34,18 @@ var createSearchOptions = function() {
     if (author == null)  author = '';
     var publisherName = localStorage.getItem('optionPublisherName');
     if (publisherName == null) publisherName = '';
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"goToSearch\" value=\"戻る\" onClick=\"setSearchOptions(); goToSearch()\">");
     main.append("<p><div class=\"dropdown\"><button id=\"optionLibraries\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionLibraries('本館')\">本館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('駅前')\">駅前</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('北館')\">北館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('南館')\">南館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('鹿ノ台')\">鹿ノ台</a></li></ul></div></p>");
     main.append("<p><input type=\"text\" id=\"optionTitle\" class=\"form-control\" placeholder=\"書名\" value=\"" + title + "\"></p>");
     main.append("<p><input type=\"text\" id=\"optionAuthor\" class=\"form-control\" placeholder=\"著者名\" value=\"" + author + "\"></p>");
     main.append("<p><input type=\"text\" id=\"optionPublisherName\" class=\"form-control\" placeholder=\"出版社\" value=\"" + publisherName + "\"></p>");
+    main.append("<p><input type=\"button\" class=\"btn btn-success\" id=\"goToSearch\" value=\"決定\" onClick=\"setSearchOptions(); goToSearch()\">");
     setOptionLibraries(libraries);
 };
 
 var onSearchOptions = function() {
     clearChildren();
-    $("#SearchOptions").remove();
-    $("#Search").remove();
+    $("#BtnSearchOptions").remove();
+    $("#BtnSearch").remove();
     createSearchOptions();
     $("input").button().click(function(event) {	event.preventDefault(); });
 };
@@ -60,6 +60,7 @@ var goToSettings = function() {
 };
 
 var onSearch = function() {
+    $("#BtnSearch").attr({disabled: 'disabled'});
     var vs = localStorage.getItem('viewStyle');
     var q = '';
     var title = localStorage.getItem('optionTitle');
@@ -75,37 +76,44 @@ var onSearch = function() {
 	q += '&publisherName=' + publisherName;
     }
     var url = "https://" + location.hostname + "/api/v1?" + q;
-    $.ajax({type: "GET", url: url}).then(function(r){
-	console.log(r);
-	if (r == 'none') {
-	    alert('一致する書籍はありませんでした');
-	} else {
-	    var obj = JSON.parse(r);
-	    var result = $("#result");
-	    result.children().remove();
-	    result.append("<div class=\"book-list\"></div>");
-	    var bookList = $(".book-list");
-	    var len = obj.Items.length;
-	    for (var i = 0; i < len; i++) {
-		if (vs == 'ノーマル') {
-		bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
-		} else if (vs == 'タイル') {
-		    bookList.append("<img src=\"" + obj.Items[i].mediumImageUrl + "\">");
-		} else if (vs == 'カルーセル') {
-		    bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div>");
+    $.ajax({type: "GET", url: url}).then(
+	function(r) { // success
+	    if (r == 'none') {
+		alert('一致する書籍はありませんでした');
+	    } else {
+		var obj = JSON.parse(r);
+		var result = $("#result");
+		result.children().remove();
+		result.append("<div class=\"book-list\"></div>");
+		var bookList = $(".book-list");
+		var len = obj.Items.length;
+		for (var i = 0; i < len; i++) {
+		    if (vs == 'ノーマル') {
+			bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
+		    } else if (vs == 'タイル') {
+			bookList.append("<img src=\"" + obj.Items[i].mediumImageUrl + "\">");
+		    } else if (vs == 'カルーセル') {
+			bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div>");
+		    }
+		}
+		if (localStorage.getItem('viewStyle') == 'カルーセル') {
+		    $('.book-list').slick({
+			dots: true,
+			speed: 100,
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			autoplay: true,
+		    });
 		}
 	    }
-	    if (localStorage.getItem('viewStyle') == 'カルーセル') {
-		$('.book-list').slick({
-		    dots: true,
-		    speed: 100,
-		    slidesToShow: 1,
-		    slidesToScroll: 1,
-		    autoplay: true,
-		});
-	    }
+	    $("#BtnSearch").removeAttr('disabled');
+	},
+	function(r) { // error
+	    alert("APIの呼び出しが失敗しました: " + url);
+	    $("#BtnSearch").removeAttr('disabled');
 	}
-    });
+    );
+
 };
 
 var setViewStyle = function(s) {
