@@ -34,9 +34,9 @@
 	<button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas"> <span class="hamb-top"></span> <span class="hamb-middle"></span> <span class="hamb-bottom"></span> </button>
 	<div class="container">
 	  <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
+      <div class="col-lg-8 col-lg-offset-2">
 	      <div id="main">
-              </div>
+        </div>
 	      <div id="result">
 	      </div>
 	    </div>
@@ -48,7 +48,18 @@
       <!-- /#wrapper --> 
     <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script> <!-- http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js -->
     <script type="text/javascript" src="/javascripts/doc-ready.js"></script>
-  </body>
+    <script type="text/javascript">
+      $(function(){
+         var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          var img = new Image();
+          img.src= "/files/9784575311549.jpg";
+          ctx.drawImage(img , 0, 0);
+          localStorage.setItem('image0', canvas.toDataURL());
+          $("#main").append('<img src="' + localStorage.image0 + '">');
+      });
+    </script>
+    </body>
   <footer>
     <p>Copyright © 2016 CODE for IKOMA</p>
   </footer>
