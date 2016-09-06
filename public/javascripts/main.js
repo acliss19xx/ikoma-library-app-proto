@@ -63,8 +63,13 @@ var goToDetail = function(obj) {
     clearChildren();
     var main = $("#main");
     var title = obj.getAttribute('alt');
+    var imageUrl = obj.getAttribute('src');
     main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"BtnReturn\" value=\"一覧に戻る\" onClick=\"goToSearch()\"></p>");
-    main.append("<p><img src=\"blank\" alt=\"" + title + "\" align=\"top\">" + title + "</p>");
+    main.append("<img src=\"" + imageUrl + "\" alt=\"" + title + "\" align=\"top\">");
+    main.append("<input type=\"image\" src=\"/images/koreyomo.png\" width=\"50%\" height=\"50%\">");
+    main.append("<ul class=\"list-group\">");
+    main.append("  <li class=\"list-group-item\">" + title + "</li>");
+    main.append("</ul>");
 };
 
 var onSearch = function() {
