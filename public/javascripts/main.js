@@ -32,7 +32,7 @@ var createSearchOptions = function() {
     var author = localStorage.getItem('optionAuthor');
     if (author == null)  author = '';
     var publisherName = localStorage.getItem('optionPublisherName');
-    if (publisherName == null) publisherName = 'こぐま社';
+    if (publisherName == null) publisherName = '';
     main.append("<p><div class=\"dropdown\"><button id=\"optionLibraries\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionLibraries('本館')\">本館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('駅前')\">駅前</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('北館')\">北館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('南館')\">南館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('鹿ノ台')\">鹿ノ台</a></li></ul></div></p>");
     main.append("<p><input type=\"text\" id=\"optionTitle\" class=\"form-control\" placeholder=\"書名\" value=\"" + title + "\"></p>");
     main.append("<p><input type=\"text\" id=\"optionAuthor\" class=\"form-control\" placeholder=\"著者名\" value=\"" + author + "\"></p>");
@@ -139,5 +139,7 @@ var setOptionLibraries = function(s) {
 $(function() {
     var vs = localStorage.getItem('viewStyle');
     if (vs == null) { localStorage.setItem('viewStyle', 'タイル'); }
+    var publisherName = localStorage.getItem('optionPublisherName');
+    if (publisherName == null) { localStorage.setItem('optionPublisherName', 'こぐま社'); }
     createSearch();
 });
