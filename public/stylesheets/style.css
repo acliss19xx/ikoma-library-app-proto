@@ -10,7 +10,7 @@ body {
 
 body, html {
   height: 100%;
-  background-color: #583e7e;
+  background-color: #FFFFFF; /*#583e7e;*/
 }
 
 .nav .open > a { background-color: transparent; }
@@ -106,9 +106,9 @@ body, html {
   color: #ffffff;
 }
 
-.sidebar-nav li:nth-child(2):before { background-color: #52418a; }
+.sidebar-nav li:nth-child(2):before { background-color: #00F22C/*#52418a*/; }
 
-.sidebar-nav li:nth-child(3):before { background-color: #5c499c; }
+.sidebar-nav li:nth-child(3):before { background-color: #00F22C/*#5c499c*/; }
 
 .sidebar-nav li:nth-child(4):before { background-color: #6651ad; }
 
@@ -218,19 +218,19 @@ body, html {
 
 .hamburger.is-closed .hamb-top {
   -webkit-transition: all 0.35s ease-in-out;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(0, 242, 44, 0.7) /*rgba(255, 255, 255, 0.7)*/;
   top: 5px;
 }
 
 .hamburger.is-closed .hamb-middle {
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(0, 242, 44, 0.7) /*rgba(255, 255, 255, 0.7)*/;
   margin-top: -2px;
   top: 50%;
 }
 
 .hamburger.is-closed .hamb-bottom {
   -webkit-transition: all 0.35s ease-in-out;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(0, 242, 44, 0.7) /*rgba(255, 255, 255, 0.7)*/;
   bottom: 5px;
 }
 
@@ -319,6 +319,22 @@ body a:hover { color: #ffffff; }
 
 .slick-list {
   line-height: 300px;
+}
+
+.slick-prev:before,
+.slick-next:before
+{
+    color: rgba(0, 242, 44, 0.7);
+}
+
+.slick-dots li button:before
+{
+    color: #00F22C;
+}
+
+.slick-dots li.slick-active button:before
+{
+    color: #00F22C;
 }
 
 footer p { color: rgba(255, 255, 255, 0.7); }
