@@ -63,12 +63,16 @@ var goToDetail = function(obj) {
     clearChildren();
     var main = $("#main");
     var title = obj.getAttribute('alt');
+    var author = obj.getAttribute('author');
+    var isbn = obj.getAttribute('isbn');
     var imageUrl = obj.getAttribute('src');
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"BtnReturn\" value=\"一覧に戻る\" onClick=\"goToSearch()\"></p>");
+    main.append("<p><input type=\"image\" src=\"/images/back.png\" id=\"BtnReturn\" onClick=\"goToSearch()\"></p>");
     main.append("<img src=\"" + imageUrl + "\" alt=\"" + title + "\" align=\"top\">");
     main.append("<input type=\"image\" src=\"/images/koreyomo.png\" width=\"50%\" height=\"50%\">");
     main.append("<ul class=\"list-group\">");
-    main.append("  <li class=\"list-group-item\">" + title + "</li>");
+    main.append("  <li class=\"list-group-item\">タイトル: " + title + "</li>");
+    main.append("  <li class=\"list-group-item\">著者: " + author + "</li>");
+    main.append("  <li class=\"list-group-item\">ISBN: " + isbn + "</li>");
     main.append("</ul>");
 };
 
@@ -104,7 +108,11 @@ var onSearch = function() {
 		    if (vs == 'ノーマル') {
 			bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
 		    } else if (vs == 'タイル') {
-			bookList.append("<input type=\"image\" src=\"" + obj.Items[i].mediumImageUrl + "\" alt=\"" + obj.Items[i].title + "\" onClick=\"goToDetail(this)\"></input>");
+			bookList.append("<input type=\"image\" src=\"" + obj.Items[i].mediumImageUrl
+					+ "\" alt=\"" + obj.Items[i].title
+					+ "\" author=\"" + obj.Items[i].author
+					+ "\" isbn=\"" + obj.Items[i].isbn
+					+ "\"onClick=\"goToDetail(this)\"></input>");
 		    } else if (vs == 'カルーセル') {
 			bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div>");
 		    }

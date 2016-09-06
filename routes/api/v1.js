@@ -28,7 +28,10 @@ router.get('/', function(req, res, next) {
 	    } else {
 		ret.Items = new Array(body.Items.length);
 		for (i = 0; i < body.Items.length; i++) {
-		    ret.Items[i] = {title: body.Items[i].Item.title, mediumImageUrl: body.Items[i].Item.mediumImageUrl};
+		    ret.Items[i] = {title: body.Items[i].Item.title,
+				    author: body.Items[i].Item.author,
+				    isbn: body.Items[i].Item.isbn,
+				    mediumImageUrl: body.Items[i].Item.mediumImageUrl};
 		}
 		res.json(util.format('%j', ret));
 	    }
