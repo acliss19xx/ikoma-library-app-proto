@@ -7,7 +7,7 @@ var clearChildren = function() {
 
 var createSearch = function() {
     var main = $("#main");
-    $("input").button().click(function(event) {	event.preventDefault(); });
+    $("input").button().click(function(event) { event.preventDefault(); });
 };
 
 var setSearchOptions = function() {
@@ -46,7 +46,7 @@ var onSearchOptions = function() {
     $("#BtnSearchOptions").remove();
     $("#BtnSearch").remove();
     createSearchOptions();
-    $("input").button().click(function(event) {	event.preventDefault(); });
+    $("input").button().click(function(event) { event.preventDefault(); });
 };
 
 var goToSettings = function() {
@@ -85,56 +85,60 @@ var onSearch = function() {
     var publisherName = localStorage.getItem('optionPublisherName');
     if (title != "") q += 'title=' + title;
     if (author != "") {
-	if (q.length > 6) q += '&';
-	q += 'author=' + author;
+        if (q.length > 6) q += '&';
+        q += 'author=' + author;
     }
     if (publisherName != "") {
-	if (q.length > 12) q += '&';
-	q += '&publisherName=' + publisherName;
+        if (q.length > 12) q += '&';
+        q += '&publisherName=' + publisherName;
     }
-    var url = "https://" + location.hostname + "/api/v1?" + q;
-    $.ajax({type: "GET", url: url}).then(
-	function(r) { // success
-	    if (r == 'none') {
-		alert('一致する書籍はありませんでした');
-	    } else {
-		var obj = JSON.parse(r);
-		var result = $("#result");
-		result.children().remove();
-		result.append("<div class=\"book-list\"></div>");
-		var bookList = $(".book-list");
-		var len = obj.Items.length;
-		for (var i = 0; i < len; i++) {
-		    if (vs == 'ノーマル') {
-			bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
-		    } else if (vs == 'タイル') {
-			bookList.append("<input type=\"image\" src=\"" + obj.Items[i].mediumImageUrl
-					+ "\" alt=\"" + obj.Items[i].title
-					+ "\" author=\"" + obj.Items[i].author
-					+ "\" isbn=\"" + obj.Items[i].isbn
-					+ "\"onClick=\"goToDetail(this)\"></input>");
-		    } else if (vs == 'カルーセル') {
-			bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div>");
-		    }
-		}
-		if (localStorage.getItem('viewStyle') == 'カルーセル') {
-		    $('.book-list').slick({
-			dots: true,
-			speed: 100,
-			slidesToShow: 1,
-			slidesToScroll: 1,
-			autoplay: true,
-		    });
-		}
+    var url = "http://" + location.hostname + ":3000/api/v1?" + q;
+    $("#loading").html("<img src=\"/images/loading.gif\" />");
+    $.ajax({type: "GET",
+            url: url,
+            success: function(r) {
+                if (r == 'none') {
+                    alert('一致する書籍はありませんでした');
+                } else {
+                    var obj = JSON.parse(r);
+                    var result = $("#result");
+                    result.children().remove();
+                    result.append("<div class=\"book-list\"></div>");
+                    var bookList = $(".book-list");
+                    var len = obj.Items.length;
+                    for (var i = 0; i < len; i++) {
+                        if (vs == 'ノーマル') {
+                            bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
+                        } else if (vs == 'タイル') {
+                            bookList.append("<input type=\"image\" src=\"" + obj.Items[i].mediumImageUrl
+                                            + "\" alt=\"" + obj.Items[i].title
+                                            + "\" author=\"" + obj.Items[i].author
+                                            + "\" isbn=\"" + obj.Items[i].isbn
+                                            + "\"onClick=\"goToDetail(this)\"></input>");
+                        } else if (vs == 'カルーセル') {
+                            bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div>");
+                        }
+                    }
+                    if (localStorage.getItem('viewStyle') == 'カルーセル') {
+                        $('.book-list').slick({
+                            dots: true,
+                            speed: 100,
+                            slidesToShow: 1,
+                            slidesToScroll: 1,
+                            autoplay: true,
+                        });
+                    }
+                }
+                $("#BtnSearch").removeAttr('disabled');
+            },
+            error: function(r) { // error
+                alert("APIの呼び出しが失敗しました: " + url);
+                $("#BtnSearch").removeAttr('disabled');
+            },
+            complete: function() {
+		$("#loading").empty();
 	    }
-	    $("#BtnSearch").removeAttr('disabled');
-	},
-	function(r) { // error
-	    alert("APIの呼び出しが失敗しました: " + url);
-	    $("#BtnSearch").removeAttr('disabled');
-	}
-    );
-
+           });
 };
 
 var setViewStyle = function(s) {

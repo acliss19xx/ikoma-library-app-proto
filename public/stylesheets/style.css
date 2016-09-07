@@ -102,7 +102,7 @@ body, html {
 }
 
 .sidebar-nav li:first-child a {
-  background-color: #1a1a1a;
+  background-color: #006600; /*#1a1a1a;*/
   color: #ffffff;
 }
 
@@ -218,19 +218,19 @@ body, html {
 
 .hamburger.is-closed .hamb-top {
   -webkit-transition: all 0.35s ease-in-out;
-  background-color: rgba(0, 242, 44, 0.7) /*rgba(255, 255, 255, 0.7)*/;
+  background-color: rgba(0, 136, 0, 0.7) /*rgba(255, 255, 255, 0.7)*/;
   top: 5px;
 }
 
 .hamburger.is-closed .hamb-middle {
-  background-color: rgba(0, 242, 44, 0.7) /*rgba(255, 255, 255, 0.7)*/;
+  background-color: rgba(0, 136, 0, 0.7) /*rgba(255, 255, 255, 0.7)*/;
   margin-top: -2px;
   top: 50%;
 }
 
 .hamburger.is-closed .hamb-bottom {
   -webkit-transition: all 0.35s ease-in-out;
-  background-color: rgba(0, 242, 44, 0.7) /*rgba(255, 255, 255, 0.7)*/;
+  background-color: rgba(0, 136, 0, 0.7) /*rgba(255, 255, 255, 0.7)*/;
   bottom: 5px;
 }
 
@@ -324,7 +324,7 @@ body a:hover { color: #ffffff; }
 .slick-prev:before,
 .slick-next:before
 {
-    color: rgba(0, 242, 44, 0.7);
+    color: rgba(0, 136, 0, 0.7);
 }
 
 .slick-dots li button:before
