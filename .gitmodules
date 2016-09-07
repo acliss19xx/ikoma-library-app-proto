@@ -1,0 +1,3 @@
+[submodule "routes/api/recommendation/recombook-ikoma"]
+	path = routes/api/recommendation/recombook-ikoma
+	url = git://github.com/code4ikoma/recombook-ikoma.git
