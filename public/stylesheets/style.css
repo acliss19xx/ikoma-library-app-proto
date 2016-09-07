@@ -45,7 +45,7 @@ body, html {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
   -webkit-transition: all 0.5s ease;
-  background: #1a1a1a;
+  background: #006600; /*#1a1a1a;*/
   height: 100%;
   left: 220px;
   margin-left: -220px;
@@ -159,7 +159,7 @@ body, html {
 }
 
 .sidebar-nav > .sidebar-brand {
-  font-size: 20px;
+  font-size: 15px;
   height: 65px;
   line-height: 44px;
 }
