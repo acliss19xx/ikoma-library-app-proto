@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var api = require('./recommendation/recombook-ikoma/sandbox/get-list/routes/get_list.js');
+var api = require('./recommendation/get_list.js');
 
 router.get('/', function(req, res, next) {
     console.log('before get_booklist()');
