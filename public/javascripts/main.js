@@ -25,6 +25,7 @@ var goToSearch = function() {
 
 var createSearchOptions = function() {
     var main = $("#main");
+    var isRecommendation = localStorage.getItem('optionIsRecommendation');
     var libraries = localStorage.getItem('optionLibraries');
     if (libraries == null) libraries = '本館';
     var title = localStorage.getItem('optionTitle');
@@ -33,18 +34,19 @@ var createSearchOptions = function() {
     if (author == null)  author = '';
     var publisherName = localStorage.getItem('optionPublisherName');
     if (publisherName == null) publisherName = '';
+    main.append("<p><div class=\"dropdown\"><button id=\"optionIsRecommendation\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li>	<a href=\"#\" onClick=\"setOptionIsRecommendation('ON')\">ON</a></li><li><a href=\"#\" onClick=\"setOptionIsRecommendation('OFF')\">OFF</a></li></ul></div></p>");
     main.append("<p><div class=\"dropdown\"><button id=\"optionLibraries\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionLibraries('本館')\">本館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('駅前')\">駅前</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('北館')\">北館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('南館')\">南館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('鹿ノ台')\">鹿ノ台</a></li></ul></div></p>");
     main.append("<p><input type=\"text\" id=\"optionTitle\" class=\"form-control\" placeholder=\"書名\" value=\"" + title + "\"></p>");
     main.append("<p><input type=\"text\" id=\"optionAuthor\" class=\"form-control\" placeholder=\"著者名\" value=\"" + author + "\"></p>");
     main.append("<p><input type=\"text\" id=\"optionPublisherName\" class=\"form-control\" placeholder=\"出版社\" value=\"" + publisherName + "\"></p>");
     main.append("<p><input type=\"button\" class=\"btn btn-success\" id=\"goToSearch\" value=\"決定\" onClick=\"setSearchOptions(); goToSearch()\">");
     setOptionLibraries(libraries);
+    setOptionIsRecommendation(isRecommendation);
 };
 
 var onSearchOptions = function() {
     clearChildren();
     $("#BtnSearchOptions").remove();
-    $("#BtnSearch").remove();
     createSearchOptions();
     $("input").button().click(function(event) { event.preventDefault(); });
 };
@@ -76,8 +78,52 @@ var goToDetail = function(obj) {
     main.append("</ul>");
 };
 
-var onSearch = function() {
-    $("#BtnSearch").attr({disabled: 'disabled'});
+var ajaxRecommendationApi = function() {
+    var vs = localStorage.getItem('viewStyle');
+    var url = "https://" + location.hostname + "/api/recommendation";
+    $("#loading").html("<img src=\"/images/loading.gif\" />");
+    $.ajax({type: "GET",
+            url: url,
+            dataType: 'json',
+            success: function(r) {
+                var result = $("#result");
+                result.children().remove();
+                result.append("<div class=\"book-list\"></div>");
+                var bookList = $(".book-list");
+                var len = r.length;
+                for (var i = 0; i < len; i++) {
+                    if (vs == 'ノーマル') {
+                        bookList.append("<p>" + r[i].Title +"<br><div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\"></div></p>");
+                    } else if (vs == 'タイル') {
+                        bookList.append("<input type=\"image\" src=\"" + r[i].MidiumImageURL
+                                        + "\" alt=\"" + r[i].Title
+                                        + "\" author=\"" + r[i].Author
+                                        + "\" isbn=\"" + r[i].Isbn
+                                        + "\"onClick=\"goToDetail(this)\"></input>");
+                    } else if (vs == 'カルーセル') {
+                        bookList.append("<div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\">" + r[i].Title + "</div>");
+                    }
+                }
+                if (localStorage.getItem('viewStyle') == 'カルーセル') {
+                    $('.book-list').slick({
+                        dots: true,
+                        speed: 100,
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        autoplay: true,
+                    });
+                }
+            },
+            error: function(r) {
+                alert("APIの呼び出しが失敗しました: " + url);
+            },
+            complete: function(r) {
+                $("#loading").empty();
+            }
+           });
+};
+
+var ajaxSearchApi = function() {
     var vs = localStorage.getItem('viewStyle');
     var q = '';
     var title = localStorage.getItem('optionTitle');
@@ -129,22 +175,46 @@ var onSearch = function() {
                         });
                     }
                 }
-                $("#BtnSearch").removeAttr('disabled');
             },
-            error: function(r) { // error
+            error: function(r) {
                 alert("APIの呼び出しが失敗しました: " + url);
-                $("#BtnSearch").removeAttr('disabled');
             },
             complete: function() {
-		$("#loading").empty();
-	    }
+                $("#loading").empty();
+            }
            });
+};
+
+var onSearch = function() {
+    var isRecommendation = localStorage.getItem('optionIsRecommendation');
+    if (isRecommendation == 'ON') {
+        ajaxRecommendationApi();
+    } else {
+        ajaxSearchApi();
+    }
 };
 
 var setViewStyle = function(s) {
     localStorage.setItem('viewStyle', s);
     $("#viewStyle").text('表示形式:' + s);
     $("#viewStyle").append('<span class="caret">')
+};
+
+var setOptionIsRecommendation = function(s) {
+    localStorage.setItem('optionIsRecommendation', s);
+    if (s == 'ON') {
+	$("#optionLibraries").attr({disabled: 'disabled'});
+	$("#optionTitle").attr({disabled: 'disabled'});
+	$("#optionAuthor").attr({disabled: 'disabled'});
+	$("#optionPublisherName").attr({disabled: 'disabled'});
+    } else {
+	$("#optionLibraries").removeAttr('disabled');
+	$("#optionTitle").removeAttr('disabled');
+	$("#optionAuthor").removeAttr('disabled');
+	$("#optionPublisherName").removeAttr('disabled');
+    }
+    $("#optionIsRecommendation").text('おすすめ:' + s);
+    $("#optionIsRecommendation").append('<span class="caret">')
 };
 
 var setOptionLibraries = function(s) {
@@ -154,6 +224,8 @@ var setOptionLibraries = function(s) {
 };
 
 $(function() {
+    var isRecommendation = localStorage.getItem('optionIsRecommendation');
+    if (isRecommendation == null) { localStorage.setItem('optionIsRecommendation', 'ON'); }
     var vs = localStorage.getItem('viewStyle');
     if (vs == null) { localStorage.setItem('viewStyle', 'タイル'); }
     var publisherName = localStorage.getItem('optionPublisherName');
