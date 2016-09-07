@@ -92,7 +92,7 @@ var onSearch = function() {
         if (q.length > 12) q += '&';
         q += '&publisherName=' + publisherName;
     }
-    var url = "http://" + location.hostname + ":3000/api/v1?" + q;
+    var url = "https://" + location.hostname + "/api/v1?" + q;
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,
