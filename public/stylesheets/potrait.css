@@ -1,0 +1,65 @@
+html, body, h1, h2, h3, h4, ul, ol, dl, li, dt, dd, p, div, span, img, a, table, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: normal;
+  font-size: 100%;
+  vertical-align:baseline;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html,body{height: 100%}
+article, header, footer, a
+side, figure, figcaption, nav, section { 
+  display:block;
+}
+body {
+  line-height: 1;
+  -ms-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+ol, ul {
+  list-style: none;
+  list-style-type: none;
+}
+
+img {max-width:100%; width /***/:auto; /*IE8用ハック*/} /*画像サイズが横幅に合わせて可変します*/
+
+#wrapper{
+    width: 100%;
+    height: 100%;
+}
+#main_container{
+    height: 100%;
+    position: relative;
+    margin: auto;
+    text-align: center;
+    background: url(../image/paper.jpg) repeat;
+}
+
+#side_container{
+    
+    width:100%;
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    background:url(../image/bg.jpg);
+    height:100px;
+    box-shadow:4px 0px 17px 1px #ebe2d3;
+-moz-box-shadow:4px 0px 17px 1px #ebe2d3;
+-webkit-box-shadow:4px 0px 17px 1px #ebe2d3;
+}
+
+img.bigbtn{display: none}
+imb.minibtn{display: block}
+
+.navbar{
+     padding: 12px;
+}
+.navbar li{
+    display: inline;
+   
+  }
