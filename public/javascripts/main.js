@@ -5,10 +5,12 @@ var clearChildren = function() {
     result.children().remove();
 };
 
+
 var createSearch = function() {
-    var main = $("#main");
-    $("input").button().click(function(event) { event.preventDefault(); });
-};
+    var main = $("#main_container");
+//    $("input").button().click(function(event) { event.preventDefault(); });
+}; 
+
 
 var setSearchOptions = function() {
     localStorage.setItem('optionTitle', $("#optionTitle")[0].value);
@@ -33,6 +35,7 @@ var createSearchOptions = function() {
     if (author == null)  author = '';
     var publisherName = localStorage.getItem('optionPublisherName');
     if (publisherName == null) publisherName = '';
+
     main.append("<p><div class=\"dropdown\"><button id=\"optionLibraries\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionLibraries('本館')\">本館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('駅前')\">駅前</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('北館')\">北館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('南館')\">南館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('鹿ノ台')\">鹿ノ台</a></li></ul></div></p>");
     main.append("<p><input type=\"text\" id=\"optionTitle\" class=\"form-control\" placeholder=\"書名\" value=\"" + title + "\"></p>");
     main.append("<p><input type=\"text\" id=\"optionAuthor\" class=\"form-control\" placeholder=\"著者名\" value=\"" + author + "\"></p>");
@@ -66,6 +69,11 @@ var goToDetail = function(obj) {
     var author = obj.getAttribute('author');
     var isbn = obj.getAttribute('isbn');
     var imageUrl = obj.getAttribute('src');
+
+    main.append('<div class="book_detail_before"></div><div class="book_detail"><table class="book_info"><tr><td class="book_big_image" style="background-image:url(' + imageUrl + '); background-size: contain; background-repeat:no-repeat;"><a href="#"><img src="/images/recommend.png" ></a></td><td><a href="#"><img src="/images/koreyomo.png"></a></td></tr><tr><td class="heading_td">タイトル：</td><td colspan="2">'+ title + '</td></tr><tr><td class="heading_td">作：</td><td>' + author + '</td></tr><tr><td class="heading_td">蔵書図書館：</td><td><img src="/images/icon_eki_on.png"><img src="/images/icon_ikoma_on.png"><img src="/images/icon_kita_off.png"></td></tr><tr><td></td><td><a href="#"><input type="button" value="この本を買う" onclick=""></a></td></tr></table></div><a onClick="goToSearch()"><img class="back" src="/images/back.png"></a></div>');
+
+/*
+
     main.append("<p><input type=\"image\" src=\"/images/back.png\" id=\"BtnReturn\" onClick=\"goToSearch()\"></p>");
     main.append("<img src=\"" + imageUrl + "\" alt=\"" + title + "\" align=\"top\">");
     main.append("<input type=\"image\" src=\"/images/koreyomo.png\" width=\"50%\" height=\"50%\">");
@@ -74,6 +82,7 @@ var goToDetail = function(obj) {
     main.append("  <li class=\"list-group-item\">著者: " + author + "</li>");
     main.append("  <li class=\"list-group-item\">ISBN: " + isbn + "</li>");
     main.append("</ul>");
+*/
 };
 
 var onSearch = function() {
@@ -103,18 +112,23 @@ var onSearch = function() {
                     var obj = JSON.parse(r);
                     var result = $("#result");
                     result.children().remove();
-                    result.append("<div class=\"book-list\"></div>");
+                    result.append('<div class="book-list"></div>');
                     var bookList = $(".book-list");
                     var len = obj.Items.length;
                     for (var i = 0; i < len; i++) {
                         if (vs == 'ノーマル') {
-                            bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
+                          bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
                         } else if (vs == 'タイル') {
+                            attr = 'src="' + obj.Items[i].mediumImageUrl + '" alt="' + obj.Items[i].title + '"';
+                            attr += 'author="' + obj.Items[i].author + '" isbn="' + obj.Items[i].isbn + '"';
+                          bookList.append('<a ' + attr + ' onClick="goToDetail(this)"><div class="bookbox"><div style="height:150px;background-color:#008888; padding-top:5px"><img src="' + obj.Items[i].mediumImageUrl +'" height="120px"></div><div class="book_title">' + obj.Items[i].title + '</div><div class="lib_icon"><img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png"><img src="/images/icon_kita.png"><img src="/images/icon_minami.png"><img src="/images/icon_shika.png"><img src="/images/icon_recommend.png"></div></div></a>');
+/*
                             bookList.append("<input type=\"image\" src=\"" + obj.Items[i].mediumImageUrl
                                             + "\" alt=\"" + obj.Items[i].title
                                             + "\" author=\"" + obj.Items[i].author
                                             + "\" isbn=\"" + obj.Items[i].isbn
                                             + "\"onClick=\"goToDetail(this)\"></input>");
+*/
                         } else if (vs == 'カルーセル') {
                             bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div>");
                         }

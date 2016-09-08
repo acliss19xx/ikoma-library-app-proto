@@ -1,340 +1,207 @@
-/*-------------------------------*/
-/*           VARIABLES           */
-/*-------------------------------*/
+html, body, h1, h2, h3, h4, ul, ol, dl, li, dt, dd, p, div, span, img, a, table, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: normal;
+  font-size: 100%;
+  vertical-align:baseline;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 
-
+html,body{height: 100%}
+article, header, footer, a
+side, figure, figcaption, nav, section { 
+  display:block;
+}
 body {
-  position: relative;
-  overflow-x: hidden;
+  line-height: 1;
+  -ms-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
-
-body, html {
-  height: 100%;
-  background-color: #FFFFFF; /*#583e7e;*/
-}
-
-.nav .open > a { background-color: transparent; }
-
-.nav .open > a:hover { background-color: transparent; }
-
-.nav .open > a:focus { background-color: transparent; }
-
-/*-------------------------------*/
-/*           Wrappers            */
-/*-------------------------------*/
-
-#wrapper {
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  -webkit-transition: all 0.5s ease;
-  padding-left: 0;
-  -webkit-transition: all 0.5s ease;
-  transition: all 0.5s ease;
-}
-
-#wrapper.toggled { padding-left: 220px; }
-
-#wrapper.toggled #sidebar-wrapper { width: 220px; }
-
-#wrapper.toggled #page-content-wrapper {
-  margin-right: -220px;
-  position: absolute;
-}
-
-#sidebar-wrapper {
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  -webkit-transition: all 0.5s ease;
-  background: #006600; /*#1a1a1a;*/
-  height: 100%;
-  left: 220px;
-  margin-left: -220px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-transition: all 0.5s ease;
-  transition: all 0.5s ease;
-  width: 0;
-  z-index: 1000;
-}
-#sidebar-wrapper::-webkit-scrollbar {
- display: none;
-}
-
-#page-content-wrapper {
-  padding-top: 70px;
-  width: 100%;
-}
-
-/*-------------------------------*/
-/*     Sidebar nav styles        */
-/*-------------------------------*/
-
-.sidebar-nav {
+ol, ul {
   list-style: none;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  top: 0;
-  width: 220px;
+  list-style-type: none;
 }
 
-.sidebar-nav li {
-  display: inline-block;
-  line-height: 20px;
-  position: relative;
-  width: 100%;
+body{
+    font-size:80%;
+    font-family: meiryo; 
+}
+img {max-width:100%; width /***/:auto; /*IE8用ハック*/} /*画像サイズが横幅に合わせて可変します*/
+
+#wrapper{
+    width: 100%;
+    height: 100%;
+}
+#main_container{
+    height: 100%;
+    position: relative;
+    margin:auto;
+    text-align: center;
+    background: url(/images/paper.jpg) repeat;
+	overflow-x: hidden;
+   
 }
 
-.sidebar-nav li:before {
-  -moz-transition: width 0.2s ease-in;
-  -ms-transition: width 0.2s ease-in;
-  -webkit-transition: width 0.2s ease-in;
-  background-color: #1c1c1c;
-  content: '';
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  -webkit-transition: width 0.2s ease-in;
-  transition: width 0.2s ease-in;
-  width: 3px;
-  z-index: -1;
+.padding_box{
+	display:block;
+	height:20vh;
 }
 
-.sidebar-nav li:first-child a {
-  background-color: #006600; /*#1a1a1a;*/
-  color: #ffffff;
+#side_container{
+    
+    width:100%;
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    background:url(/images/bg.jpg);
+    height:100px;
+    box-shadow:4px 0px 17px 1px #ebe2d3;
+-moz-box-shadow:4px 0px 17px 1px #ebe2d3;
+-webkit-box-shadow:4px 0px 17px 1px #ebe2d3;
 }
 
-.sidebar-nav li:nth-child(2):before { background-color: #00F22C/*#52418a*/; }
+img.bigbtn{display: none}
+imb.minibtn{display: block}
 
-.sidebar-nav li:nth-child(3):before { background-color: #00F22C/*#5c499c*/; }
+.navbar{
+     padding: 12px;
+}
+.navbar li{
+    display: inline;
+   
+  }
 
-.sidebar-nav li:nth-child(4):before { background-color: #6651ad; }
-
-.sidebar-nav li:nth-child(5):before { background-color: #7562b5; }
-
-.sidebar-nav li:nth-child(6):before { background-color: #8473be; }
-
-.sidebar-nav li:nth-child(7):before { background-color: #9485c6; }
-
-.sidebar-nav li:nth-child(8):before { background-color: #a396ce; }
-
-.sidebar-nav li:nth-child(9):before { background-color: #b2a7d6; }
-
-.sidebar-nav li:hover:before {
-  -webkit-transition: width 0.2s ease-in;
-  transition: width 0.2s ease-in;
-  width: 100%;
+.inner_container{
+    white-space: nowrap;
+    overflow-x: scroll;
+	
 }
 
-.sidebar-nav li a {
-  color: #dddddd;
-  display: block;
-  padding: 10px 15px 10px 30px;
-  text-decoration: none;
+
+
+
+
+.bookbox{
+    display: inline-block;
+	vertical-align: top; 
+	height:200px;
+    width:200px;
+	margin:0px 10px;
+    text-align: center;
+    word-wrap : break-word;
+    white-space: normal;
+   
 }
 
-.sidebar-nav li.open:hover before {
-  -webkit-transition: width 0.2s ease-in;
-  transition: width 0.2s ease-in;
-  width: 100%;
+.book_title{
+	overflow: hidden;
+	-o-text-overflow: ellipsis;
+	-webkit-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	width: 180px;
+	white-space: nowrap;
 }
 
-.sidebar-nav .dropdown-menu {
-  background-color: #222222;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  width: 100%;
+.bookbox img{
+	vertical-align:middle;
+	margin:0 auto 5px;
 }
 
-.sidebar-nav li a:hover, .sidebar-nav li a:active, .sidebar-nav li a:focus, .sidebar-nav li.open a:hover, .sidebar-nav li.open a:active, .sidebar-nav li.open a:focus {
-  background-color: transparent;
-  color: #ffffff;
-  text-decoration: none;
+.lib_icon{
+	
+	vertical-align:baseline;
+	
 }
 
-.sidebar-nav > .sidebar-brand {
-  font-size: 15px;
-  height: 65px;
-  line-height: 44px;
+img.back{
+	text-align:left;
 }
 
-/*-------------------------------*/
-/*       Hamburger-Cross         */
-/*-------------------------------*/
-
-.hamburger {
-  background: transparent;
-  border: none;
-  display: block;
-  height: 32px;
-  margin-left: 15px;
-  position: fixed;
-  top: 20px;
-  width: 32px;
-  z-index: 999;
+.book_detail table{
+	text-align:center;
+	margin:0 auto;
 }
 
-.hamburger:hover { outline: none; }
-
-.hamburger:focus { outline: none; }
-
-.hamburger:active { outline: none; }
-
-.hamburger.is-closed:before {
-  -webkit-transform: translate3d(0, 0, 0);
-  -webkit-transition: all 0.35s ease-in-out;
-  color: #ffffff;
-  content: '';
-  display: block;
-  font-size: 14px;
-  line-height: 32px;
-  opacity: 0;
-  text-align: center;
-  width: 100px;
+.book_info td{
+	
+	padding:2px;
+	text-align:left;
+	vertical-align:top;
+		border-bottom:1px solid #ebe2d3;
 }
 
-.hamburger.is-closed:hover before {
-  -webkit-transform: translate3d(-100px, 0, 0);
-  -webkit-transition: all 0.35s ease-in-out;
-  display: block;
-  opacity: 1;
+td.heading_td{
+	text-align:right;
+	}
+
+td.book_big_image{
+	width:250px;
+	height:250px;
+	vertical-align:bottom;
+}
+@media (min-width:640px){
+
+   /* ↓ページレイアウト */
+   #wrapper {
+      display: flex;       /* フレキシブルボックスでレイアウト */
+      flex-direction: row; /* 横並びにする */
+   }
+
+   /* ▼メインカラムの装飾 */
+   #main_container{
+      order: 2;   /* 2番目に表示 */
+      width: 100%;
+      margin: 0 0 0 200px;
+      height: 100%;
+   }
+   /* ▽サイドカラムの装飾 */
+   #side_container {
+      order: 1;   /* 1番目に表示 */
+      width: 200px;
+      height: 100%;
+     
+   }
+    
+    img.bigbtn{display: block}
+    img.minibtn{display: none}
+
+    .navbar{
+        position: fixed;
+        top:20%;
+        padding: 15px;}
+    
+  
+
+
 }
 
-.hamburger.is-closed:hover .hamb-top {
-  -webkit-transition: all 0.35s ease-in-out;
-  top: 0;
+/*===============================================
+画面の横幅が769px以上（パソコン用）
+===============================================*/
+@media screen and (min-width: 769px){
+	
+	.book_detail_before{
+		display:block;
+		height:20vh;
+ 
 }
 
-.hamburger.is-closed:hover .hamb-bottom {
-  -webkit-transition: all 0.35s ease-in-out;
-  bottom: 0;
+/*===============================================
+画面の横幅が768pxまで（タブレット用）
+===============================================*/
+@media screen and (max-width: 768px){
+
+
 }
 
-.hamburger.is-closed .hamb-top {
-  -webkit-transition: all 0.35s ease-in-out;
-  background-color: rgba(0, 136, 0, 0.7) /*rgba(255, 255, 255, 0.7)*/;
-  top: 5px;
+/*===============================================
+画面の横幅が640pxまで（スマホ用）
+===============================================*/
+@media screen and (max-width:640px){
+    
+
 }
-
-.hamburger.is-closed .hamb-middle {
-  background-color: rgba(0, 136, 0, 0.7) /*rgba(255, 255, 255, 0.7)*/;
-  margin-top: -2px;
-  top: 50%;
-}
-
-.hamburger.is-closed .hamb-bottom {
-  -webkit-transition: all 0.35s ease-in-out;
-  background-color: rgba(0, 136, 0, 0.7) /*rgba(255, 255, 255, 0.7)*/;
-  bottom: 5px;
-}
-
-.hamburger.is-closed .hamb-top, .hamburger.is-closed .hamb-middle, .hamburger.is-closed .hamb-bottom, .hamburger.is-open .hamb-top, .hamburger.is-open .hamb-middle, .hamburger.is-open .hamb-bottom {
-  height: 4px;
-  left: 0;
-  position: absolute;
-  width: 100%;
-}
-
-.hamburger.is-open .hamb-top {
-  -webkit-transform: rotate(45deg);
-  -webkit-transition: -webkit-transform 0.2s cubic-bezier(0.73, 1, 0.28, 0.08);
-  background-color: #ffffff;
-  margin-top: -2px;
-  top: 50%;
-}
-
-.hamburger.is-open .hamb-middle {
-  background-color: #ffffff;
-  display: none;
-}
-
-.hamburger.is-open .hamb-bottom {
-  -webkit-transform: rotate(-45deg);
-  -webkit-transition: -webkit-transform 0.2s cubic-bezier(0.73, 1, 0.28, 0.08);
-  background-color: #ffffff;
-  margin-top: -2px;
-  top: 50%;
-}
-
-.hamburger.is-open:before {
-  -webkit-transform: translate3d(0, 0, 0);
-  -webkit-transition: all 0.35s ease-in-out;
-  color: #ffffff;
-  content: '';
-  display: block;
-  font-size: 14px;
-  line-height: 32px;
-  opacity: 0;
-  text-align: center;
-  width: 100px;
-}
-
-.hamburger.is-open:hover before {
-  -webkit-transform: translate3d(-100px, 0, 0);
-  -webkit-transition: all 0.35s ease-in-out;
-  display: block;
-  opacity: 1;
-}
-
-/*-------------------------------*/
-/*          Dark Overlay         */
-/*-------------------------------*/
-
-.overlay {
-  position: fixed;
-  display: none;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
-  z-index: 1;
-}
-
-/* ADJUST */
-
-body h1, body h2, body h3, body h4 { color: rgba(255, 255, 255, 0.9); }
-
-body blockquote { color: rgba(255, 255, 255, 0.7); }
-
-body a {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: underline;
-}
-
-body a:hover { color: #ffffff; }
-
-#result {
-  margin-left: 20px;
-  margin-right: 20px;
-}
-
-.slick-list {
-  line-height: 300px;
-}
-
-.slick-prev:before,
-.slick-next:before
-{
-    color: rgba(0, 136, 0, 0.7);
-}
-
-.slick-dots li button:before
-{
-    color: #00F22C;
-}
-
-.slick-dots li.slick-active button:before
-{
-    color: #00F22C;
-}
-
-footer p { color: rgba(255, 255, 255, 0.7); }
