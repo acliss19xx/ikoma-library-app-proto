@@ -103,11 +103,17 @@ var ajaxRecommendationApi = function() {
                     if (vs == 'ノーマル') {
                         bookList.append("<p>" + r[i].Title +"<br><div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\"></div></p>");
                     } else if (vs == 'タイル') {
+                      attr = 'src="' + r[i].MidiumImageURL + '" alt="' + r[i].Title + '"';
+                      attr += 'author="' + r[i].Author + '" isbn="' + r[i].Isbn + '"';
+                      bookList.append('<a ' + attr + ' onClick="goToDetail(this)"><div class="bookbox"><div style="height:150px;background-color:#008888; padding-top:5px"><img src="' + r[i].MidiumImageURL +'" height="120px"></div><div class="book_title">' + r[i].Title + '</div><div class="lib_icon"><img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png"><img src="/images/icon_kita.png"><img src="/images/icon_minami.png"><img src="/images/icon_shika.png"><img src="/images/icon_recommend.png"></div></div></a>');
+
+/*
                         bookList.append("<input type=\"image\" src=\"" + r[i].MidiumImageURL
                                         + "\" alt=\"" + r[i].Title
                                         + "\" author=\"" + r[i].Author
                                         + "\" isbn=\"" + r[i].Isbn
                                         + "\"onClick=\"goToDetail(this)\"></input>");
+*/
                     } else if (vs == 'カルーセル') {
                         bookList.append("<div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\">" + r[i].Title + "</div>");
                     }
