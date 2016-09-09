@@ -71,7 +71,42 @@ var goToDetail = function(obj) {
     var isbn = obj.getAttribute('isbn');
     var imageUrl = obj.getAttribute('src');
 
-    main.append('<div class="book_detail_before"></div><div class="book_detail"><table class="book_info"><tr><td class="book_big_image" style="background-image:url(' + imageUrl + '); background-size: contain; background-repeat:no-repeat;"><a href="#"><img src="/images/recommend.png" ></a></td><td><a href="#"><img src="/images/koreyomo.png"></a></td></tr><tr><td class="heading_td">タイトル：</td><td colspan="2">'+ title + '</td></tr><tr><td class="heading_td">作：</td><td>' + author + '</td></tr><tr><td class="heading_td">蔵書図書館：</td><td><img src="/images/icon_eki_on.png"><img src="/images/icon_ikoma_on.png"><img src="/images/icon_kita_off.png"></td></tr><tr><td></td><td><a href="#"><input type="button" value="この本を買う" onclick=""></a></td></tr></table></div><a onClick="goToSearch()"><img class="back" src="/images/back.png"></a></div>');
+    var html_string = '<div class="book_detail_before"></div>' +
+                        '<div class="book_detail">' + 
+                            '<table class="book_info">' + 
+                                '<tr>' + 
+                                    '<td class="book_big_image" style="background-image:url(' + imageUrl + '); background-size: contain; background-repeat:no-repeat;">' + 
+                                        '<a href="#"><img src="/images/recommend.png" ></a>' + 
+                                    '</td>' + 
+                                    '<td>' + 
+                                        '<a href="#"><img src="/images/koreyomo.png"></a>' + 
+                                    '</td>' + 
+                                '</tr>' + 
+                                '<tr>' + 
+                                    '<td class="heading_td">タイトル：</td>' + 
+                                    '<td colspan="2">'+ title + '</td>' + 
+                                '</tr>' + 
+                                '<tr>' + 
+                                    '<td class="heading_td">作：</td>' + 
+                                    '<td>' + author + '</td>' + 
+                                '</tr>' + 
+                                '<tr>' + 
+                                    '<td class="heading_td">蔵書図書館：</td>' + 
+                                    '<td>' + 
+                                        '<img src="/images/icon_eki_on.png"><img src="/images/icon_ikoma_on.png">' + 
+                                        '<img src="/images/icon_kita_off.png">' + 
+                                    '</td>' + 
+                                '</tr>' + 
+                                '<tr>' + 
+                                    '<td></td>' + 
+                                    '<td><a href="#"><input type="button" value="この本を買う" onclick=""></a></td>' + 
+                                '</tr>' +
+                            '</table>' + 
+                        '</div>' + 
+                        '<a onClick="goToSearch()"><img class="back" src="/images/back.png"></a>' +
+                      '</div>';
+
+    main.append(html_string);
 
 /*
 
@@ -103,9 +138,23 @@ var ajaxRecommendationApi = function() {
                     if (vs == 'ノーマル') {
                         bookList.append("<p>" + r[i].Title +"<br><div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\"></div></p>");
                     } else if (vs == 'タイル') {
-                      attr = 'src="' + r[i].MidiumImageURL + '" alt="' + r[i].Title + '"';
+                      var attr = 'src="' + r[i].MidiumImageURL + '" alt="' + r[i].Title + '"';
                       attr += 'author="' + r[i].Author + '" isbn="' + r[i].Isbn + '"';
-                      bookList.append('<a ' + attr + ' onClick="goToDetail(this)"><div class="bookbox"><div style="height:150px;background-color:#008888; padding-top:5px"><img src="' + r[i].MidiumImageURL +'" height="120px"></div><div class="book_title">' + r[i].Title + '</div><div class="lib_icon"><img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png"><img src="/images/icon_kita.png"><img src="/images/icon_minami.png"><img src="/images/icon_shika.png"><img src="/images/icon_recommend.png"></div></div></a>');
+                      var html_string ='<a ' + attr + ' onClick="goToDetail(this)">' + 
+                                        '<div class="bookbox">' +
+                                            '<div style="height:150px; padding-top:5px">' +
+                                                '<img src="' + r[i].MidiumImageURL +'" height="120px">' +
+                                            '</div>' +
+                                            '<div class="book_title">' + r[i].Title + '</div>' +
+                                            '<div class="lib_icon">' +
+                                                '<img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">' +
+                                                '<img src="/images/icon_kita.png"><img src="/images/icon_minami.png">' +
+                                                '<img src="/images/icon_shika.png"><img src="/images/icon_recommend.png">' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</a>';
+
+                      bookList.append(html_string);
 
 /*
                         bookList.append("<input type=\"image\" src=\"" + r[i].MidiumImageURL
