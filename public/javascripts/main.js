@@ -74,9 +74,22 @@ var goToDetail = function(obj) {
     var html_string = '<div class="book_detail_before"></div>' +
                         '<div class="book_detail">' + 
                             '<table class="book_info">' + 
+                                '<tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>' +
                                 '<tr>' + 
                                     '<td class="book_big_image" style="background-image:url(' + imageUrl + '); background-size: contain; background-repeat:no-repeat;">' + 
-                                        '<a href="#"><img src="/images/recommend.png" ></a>' + 
+                                    '<div id="recommend">' +
+                                        '<a href="#open_recommend"><img src="/images/recommend.png" ></a>' +
+                                        '<div id="modal">' +
+                                            '<div id="open_recommend">' + 
+                                                '<a href="#" class="close_overlay">×</a>' + 
+                                                '<div class="modal_window">' +
+                                                    '<h2>生駒図書館司書おすすめ</h2>' + 
+                                                    '<p>「せんせいやお母さんは、本をいっぱいよみなさいっていうけど・・・」いこまにすんでいる小学校２年生のよみちゃん。夏休みにはいってからもう１週間もたつのに、まだよみたい本が見つかりません。おうちの近くの図書かんに行ってもたくさん本がならんでいるのを見ると、どれにしようかまよってしまいます。さてさて、よみちゃんのよみたい本はいったいどこにかくれているのでしょうか・・・？本を読みたい気持ちはいっぱいあるのに、なかなか本を決められなくて困っているよみちゃんが、すてきな本に出会うおはなしです。</p>' +
+                                                    '<a href="#"><img src="/images/close.png" ></a>' + 
+                                                '</div><!--/.modal_window-->'+ 
+                                            '</div><!--/#open01-->'+
+                                        '</div><!--/#modal-->' +
+                                    '</div><!--/#recommend-->' +
                                     '</td>' + 
                                     '<td>' + 
                                         '<a href="#"><img src="/images/koreyomo.png"></a>' + 
@@ -99,7 +112,13 @@ var goToDetail = function(obj) {
                                 '</tr>' + 
                                 '<tr>' + 
                                     '<td></td>' + 
-                                    '<td><a href="#"><input type="button" value="この本を買う" onclick=""></a></td>' + 
+                                    '<td>' +
+                                        '<a href="#"><input type="button" value="この本を買う" onclick=""></a>' +
+                                        '<div class="rakuten"><!-- Rakuten Web Services Attribution Snippet FROM HERE -->' +
+                                            '<a href="http://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>' +
+                                            '<!-- Rakuten Web Services Attribution Snippet TO HERE -->' +
+                                        '</div>' +
+                                    '</td>' + 
                                 '</tr>' +
                             '</table>' + 
                         '</div>' + 
@@ -131,9 +150,13 @@ var ajaxRecommendationApi = function() {
             success: function(r) {
                 var result = $("#result");
                 result.children().remove();
-                result.append("<div class=\"book-list\"></div>");
+                result.append('<div class="padding_box"></div>');
+                result.append('<div class="inner_container"></div>');
+                var inner_container = $('.inner_container');
+                inner_container.append("<div class=\"book-list\"></div>");
                 var bookList = $(".book-list");
                 var len = r.length;
+
                 for (var i = 0; i < len; i++) {
                     if (vs == 'ノーマル') {
                         bookList.append("<p>" + r[i].Title +"<br><div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\"></div></p>");
@@ -142,7 +165,7 @@ var ajaxRecommendationApi = function() {
                       attr += 'author="' + r[i].Author + '" isbn="' + r[i].Isbn + '"';
                       var html_string ='<a ' + attr + ' onClick="goToDetail(this)">' + 
                                         '<div class="bookbox">' +
-                                            '<div style="height:150px; padding-top:5px">' +
+                                            '<div style="height:125px;">' +
                                                 '<img src="' + r[i].MidiumImageURL +'" height="120px">' +
                                             '</div>' +
                                             '<div class="book_title">' + r[i].Title + '</div>' +
@@ -167,6 +190,7 @@ var ajaxRecommendationApi = function() {
                         bookList.append("<div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\">" + r[i].Title + "</div>");
                     }
                 }
+
                 if (localStorage.getItem('viewStyle') == 'カルーセル') {
                     $('.book-list').slick({
                         dots: true,
