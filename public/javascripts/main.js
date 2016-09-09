@@ -323,4 +323,5 @@ $(function() {
     var publisherName = localStorage.getItem('optionPublisherName');
     if (publisherName == null) { localStorage.setItem('optionPublisherName', 'こぐま社'); }
     createSearch();
+    goToSearch();
 });
