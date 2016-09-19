@@ -187,7 +187,7 @@ function get_bookinfo_about_lib_with_arg( booklist, Setting, retry_flag ){
 		console.log("json=" + json);
         
         if( json.indexOf('<html>') != -1){      //htmlでエラーが返る場合がある
-            console.log("temporary error. Isbn=" + BookInfo.Isbn);
+            console.log("temporary error.");
             
             calil_session_status = CALIL_STATUS_ERROR;
             dfd_calil.reject();
