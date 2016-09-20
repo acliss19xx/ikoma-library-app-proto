@@ -1,12 +1,9 @@
 var clearChildren = function() {
     var main = $("#main");
     var result = $("#result");
+    main.text('');
     main.children().remove();
     result.children().remove();
-};
-
-var createInitialSetting = function() {
-    createInitialSetLibraries();
 };
 
 var createInitialSetLibraries = function() {
@@ -41,13 +38,26 @@ var createInitialSetAge = function() {
     main.children().remove();
     main.append("<p><div class=\"alert alert-info\" role=\"alert\">対象年齢は？</div>");
     main.append("<div class=\"btn-group-vertical\" role=\"group\" aria-label=\"age\">");
-    main.append("<input type=\"button\" class=\"btn btn-default\" id=\"age_0-2\">0～2歳</button>");
-    main.append("<input type=\"button\" class=\"btn btn-default\" id=\"age_3-6\">3～6歳</button>");
-    main.append("<input type=\"button\" class=\"btn btn-default\" id=\"age_7-10\">7～10歳</button>");
-    main.append("<input type=\"button\" class=\"btn btn-default\" id=\"age_11-13\">11～13歳</button>");
+    main.append("<input type=\"radio\" name=\"age\" id=\"age_0-2\" checked>0～2歳</br>");
+    main.append("<input type=\"radio\" name=\"age\" id=\"age_3-6\">3～6歳</br>");
+    main.append("<input type=\"radio\" name=\"age\" id=\"age_7-10\">7～10歳</br>");
+    main.append("<input type=\"radio\" name=\"age\" id=\"age_11-13\">11～13歳</br>");
     main.append("</div></p>");
     main.append("<button type=\"button\" class=\"btn btn-warning\" onClick=\"createInitialSetLibraries()\">戻る</button>");
-    main.append("<button type=\"button\" class=\"btn btn-success\" onClick=\"goToSearch()\">次へ</button>");
+    main.append("<button type=\"button\" class=\"btn btn-success\" onClick=\"onSetAge()\">次へ</button>");
+};
+
+var onSetAge = function() {
+    var age_0_2 = $('#age_0-2').attr('checked');
+    var age_3_6 = $('#age_3-6').attr('checked');
+    var age_7_10 = $('#age_7-10').attr('checked');
+    var age_11_13 = $('#age_11-13').attr('checked');
+    if (age_0_2 == 'checked') { localStorage.setItem('age', '0-2'); }
+    if (age_3_6 == 'checked') { localStorage.setItem('age', '3-6'); }
+    if (age_7_10 == 'checked') { localStorage.setItem('age', '7-10'); }
+    if (age_11_13 == 'checked') { localStorage.setItem('age', '11-13'); }
+    localStorage.setItem('initialized', 'true');
+    goToSearch();    
 };
 
 var setSearchOptions = function() {
@@ -179,7 +189,7 @@ var goToDetail = function(obj) {
 
 var ajaxRecommendationApi = function() {
     var vs = localStorage.getItem('viewStyle');
-    var url = "http://" + location.hostname + ":3000/api/recommendation";
+    var url = "https://" + location.hostname + "/api/recommendation";
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,
@@ -361,6 +371,8 @@ $(function() {
     if (publisherName == null) { localStorage.setItem('optionPublisherName', 'こぐま社'); }
     var initialized = localStorage.getItem('initialized');
     if (initialized == null) {
-	createInitialSetting();
+	createInitialSetLibraries();
+    } else {
+	goToSearch();
     }
 });
