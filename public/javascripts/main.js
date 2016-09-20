@@ -5,12 +5,50 @@ var clearChildren = function() {
     result.children().remove();
 };
 
+var createInitialSetting = function() {
+    createInitialSetLibraries();
+};
 
-var createSearch = function() {
-    var main = $("#main_container");
-//    $("input").button().click(function(event) { event.preventDefault(); });
-}; 
+var createInitialSetLibraries = function() {
+    var main = $("#main");
+    main.children().remove();
+    main.append("<p><div class=\"alert alert-info\" role=\"alert\">よく使う図書館は？</div>");
+    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibHonkan\">本館</label></div>");
+    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibEkimae\">駅前</label></div>");
+    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibKita\">北館</label></div>");
+    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibMinami\">南館</label></div>");
+    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibShika\">鹿ノ台</label></div>");
+    main.append("</p>");
+    main.append("<button type=\"button\" class=\"btn btn-success\" onClick=\"onSetLibraries()\">次へ</button>");
+};
 
+var onSetLibraries = function() {
+    var useLibHonkan = $('#useLibHonkan').is(':checked');
+    var useLibEkimae = $('#useLibEkimae').is(':checked');
+    var useLibKita = $('#useLibKita').is(':checked');
+    var useLibMinami = $('#useLibMinami').is(':checked');
+    var useLibShika = $('#useLibShika').is(':checked');
+    localStorage.setItem('useLibHonkan', useLibHonkan);
+    localStorage.setItem('useLibEkimae', useLibEkimae);
+    localStorage.setItem('useLibKita', useLibKita);
+    localStorage.setItem('useLibMinami', useLibMinami);
+    localStorage.setItem('useLibShika', useLibShika);
+    createInitialSetAge();
+};
+
+var createInitialSetAge = function() {
+    var main = $("#main");
+    main.children().remove();
+    main.append("<p><div class=\"alert alert-info\" role=\"alert\">対象年齢は？</div>");
+    main.append("<div class=\"btn-group-vertical\" role=\"group\" aria-label=\"age\">");
+    main.append("<input type=\"button\" class=\"btn btn-default\" id=\"age_0-2\">0～2歳</button>");
+    main.append("<input type=\"button\" class=\"btn btn-default\" id=\"age_3-6\">3～6歳</button>");
+    main.append("<input type=\"button\" class=\"btn btn-default\" id=\"age_7-10\">7～10歳</button>");
+    main.append("<input type=\"button\" class=\"btn btn-default\" id=\"age_11-13\">11～13歳</button>");
+    main.append("</div></p>");
+    main.append("<button type=\"button\" class=\"btn btn-warning\" onClick=\"createInitialSetLibraries()\">戻る</button>");
+    main.append("<button type=\"button\" class=\"btn btn-success\" onClick=\"goToSearch()\">次へ</button>");
+};
 
 var setSearchOptions = function() {
     localStorage.setItem('optionTitle', $("#optionTitle")[0].value);
@@ -20,7 +58,6 @@ var setSearchOptions = function() {
 
 var goToSearch = function() {
     clearChildren();
-    createSearch();
     $('.hamburger.is-open').click();
     onSearch();
 };
@@ -142,7 +179,7 @@ var goToDetail = function(obj) {
 
 var ajaxRecommendationApi = function() {
     var vs = localStorage.getItem('viewStyle');
-    var url = "https://" + location.hostname + "/api/recommendation";
+    var url = "http://" + location.hostname + ":3000/api/recommendation";
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,
@@ -225,7 +262,7 @@ var ajaxSearchApi = function() {
         if (q.length > 12) q += '&';
         q += '&publisherName=' + publisherName;
     }
-    var url = "https://" + location.hostname + "/api/v1?" + q;
+    var url = "http://" + location.hostname + ":3000/api/v1?" + q;
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,
@@ -322,6 +359,8 @@ $(function() {
     if (vs == null) { localStorage.setItem('viewStyle', 'タイル'); }
     var publisherName = localStorage.getItem('optionPublisherName');
     if (publisherName == null) { localStorage.setItem('optionPublisherName', 'こぐま社'); }
-    createSearch();
-    goToSearch();
+    var initialized = localStorage.getItem('initialized');
+    if (initialized == null) {
+	createInitialSetting();
+    }
 });
