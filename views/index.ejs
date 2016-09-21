@@ -26,6 +26,7 @@
       <script src="/javascripts/fade.js"></script>
       <script type="text/javascript" src="/javascripts/jquery-migrate-1.2.1.min.js"></script> <!-- http://code.jquery.com/jquery-migrate-1.2.1.min.js -->
       <script type="text/javascript" src="/javascripts/slick.min.js"></script> <!-- http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js -->
+      <script type="text/javascript" src="/javascripts/handlebars.js"></script>    
       <script type="text/javascript" src="/javascripts/main.js"></script>    
     </head>
       
@@ -73,6 +74,28 @@
      
  
     </div>
+    <script type="text/x-handlebars-template" id="holizontal-list">
+    <div class="padding_box"></div>
+    <div class="inner_container">
+        <div class="book-list">
+            {{#each this}}
+            <a src="{{MidiumImageURL}}" alt="{{Title}}" author="{{Author}}" isbn="{{Isbn}}" onClick="goToDetail(this)"> 
+                <div class="bookbox">
+                    <div style="height:125px;">
+                        <img src="{{MidiumImageURL}}" height="120px">
+                    </div>
+                    <div class="book_title">{{Title}}</div>
+                    <div class="lib_icon">
+                        <img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">
+                        <img src="/images/icon_kita.png"><img src="/images/icon_minami.png">
+                        <img src="/images/icon_shika.png"><img src="/images/icon_recommend.png">
+                    </div>
+                </div>
+            </a>
+            {{/each}}
+        </div>
+    </div>
 
+</script>
 </body>
 </html>

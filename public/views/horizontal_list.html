@@ -1,0 +1,15 @@
+<script type="text/template" id="horizontal-list">
+   <a src="<%= d.MidiumImageURL %>" alt="<%- d.Title %>" author="<%- d.Author %>" isbn="<%-d.Isbn %>" onClick="goToDetail(this)"> 
+        <div class="bookbox">
+            <div style="height:125px;">
+                <img src="<%=d.MidiumImageURL %>" height="120px">
+            </div>
+            <div class="book_title"><%-d.Title%></div>
+            <div class="lib_icon">
+                <img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">
+                <img src="/images/icon_kita.png"><img src="/images/icon_minami.png">
+                <img src="/images/icon_shika.png"><img src="/images/icon_recommend.png">
+            </div>
+        </div>
+    </a>
+</script>

@@ -189,7 +189,7 @@ var goToDetail = function(obj) {
 
 var ajaxRecommendationApi = function() {
     var vs = localStorage.getItem('viewStyle');
-    var url = "https://" + location.hostname + "/api/recommendation";
+    var url = "http://" + location.hostname + "/api/recommendation";
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,
@@ -204,6 +204,11 @@ var ajaxRecommendationApi = function() {
                 var bookList = $(".book-list");
                 var len = r.length;
 
+                var source = $("#holizontal-list").html();
+                var template = Handlebars.compile(source);
+                var html = template(r);
+                $('.book-list').append(html);
+/*
                 for (var i = 0; i < len; i++) {
                     if (vs == 'ノーマル') {
                         bookList.append("<p>" + r[i].Title +"<br><div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\"></div></p>");
@@ -225,14 +230,14 @@ var ajaxRecommendationApi = function() {
                                     '</a>';
 
                       bookList.append(html_string);
-
+*/
 /*
                         bookList.append("<input type=\"image\" src=\"" + r[i].MidiumImageURL
                                         + "\" alt=\"" + r[i].Title
                                         + "\" author=\"" + r[i].Author
                                         + "\" isbn=\"" + r[i].Isbn
                                         + "\"onClick=\"goToDetail(this)\"></input>");
-*/
+*//*
                     } else if (vs == 'カルーセル') {
                         bookList.append("<div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\">" + r[i].Title + "</div>");
                     }
@@ -247,7 +252,7 @@ var ajaxRecommendationApi = function() {
                         autoplay: true,
                     });
                 }
-            },
+*/            },
             error: function(r) {
                 alert("APIの呼び出しが失敗しました: " + url);
             },
