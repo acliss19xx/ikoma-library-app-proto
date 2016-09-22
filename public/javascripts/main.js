@@ -8,7 +8,7 @@ var clearChildren = function() {
 
 var createInitialSetLibraries = function() {
     var main = $("#main");
-    main.children().remove();
+    clearChildren();
     main.append("<p><div class=\"alert alert-info\" role=\"alert\">よく使う図書館は？</div>");
     main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibHonkan\">本館</label></div>");
     main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibEkimae\">駅前</label></div>");
@@ -35,7 +35,7 @@ var onSetLibraries = function() {
 
 var createInitialSetAge = function() {
     var main = $("#main");
-    main.children().remove();
+    clearChildren();
     main.append("<p><div class=\"alert alert-info\" role=\"alert\">対象年齢は？</div>");
     main.append("<div class=\"btn-group-vertical\" role=\"group\" aria-label=\"age\">");
     main.append("<input type=\"radio\" name=\"age\" id=\"age_0-2\" checked>0～2歳</br>");
