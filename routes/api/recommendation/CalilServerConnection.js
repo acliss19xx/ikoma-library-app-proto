@@ -624,6 +624,7 @@ function setBookLibRentaledInfo( isbn, Setting, libraries, name ){
         for(j=0; j<nearLib.length; j++){
             if( libraries[i] == nearLib[j] ){   
                 book.IsCityLibRentaled1 = checkLibRentaledStatus(name[i]);
+                //★★★★　{LIB_1: 1}のような形式に変更しよう　　LIB_1
                 
             }
             
@@ -736,6 +737,10 @@ function init_calil_books_status( booklist ){
 
 function checkIsbn( isbn ){
     if(( isbn == "") || (isbn == " ")){
+        return 0;
+    }
+    else if( /[^0-9|^-]/.test(isbn)){   //数字以外があればtrue
+        console.log("invalid isbn: " + isbn);
         return 0;
     }
     else{
