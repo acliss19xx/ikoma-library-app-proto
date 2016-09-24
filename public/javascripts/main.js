@@ -72,6 +72,15 @@ var goToSearch = function() {
     onSearch();
 };
 
+var returnToSearchResult = function() {
+    var main = $("#main");
+    var result = $("#result");
+    main.text('');
+    main.children().remove();
+    var result = $("#result");
+    result.show();
+};
+
 var createSearchOptions = function() {
     var main = $("#main");
     var isRecommendation = localStorage.getItem('optionIsRecommendation');
@@ -111,7 +120,8 @@ var goToSettings = function() {
 };
 
 var goToDetail = function(obj) {
-    clearChildren();
+    var result = $("#result");
+    result.hide();
     var main = $("#main");
     var title = obj.getAttribute('alt');
     var author = obj.getAttribute('author');
@@ -169,7 +179,7 @@ var goToDetail = function(obj) {
                                 '</tr>' +
                             '</table>' + 
                         '</div>' + 
-                        '<a onClick="goToSearch()"><img class="back" src="/images/back.png"></a>' +
+                        '<a onClick="returnToSearchResult()"><img class="back" src="/images/back.png"></a>' +
                       '</div>';
 
     main.append(html_string);
