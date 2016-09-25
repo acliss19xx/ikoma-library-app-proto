@@ -27,14 +27,15 @@ function get_rakuten_ranking_list_with_arg( booklist, Setting ){
     
     var dfd = new $.Deferred;     //node.jsではdeferred使えない？？？ 右記記事では使えてるんだけどなぁhttp://zuqqhi2.com/jquery-deferred
     
-    
+    var query = makeUrl( Setting.age, SelectBooks.page );
     
     var options = {
 	host: RAKUTEN_RANKING_DOMAIN,
 	port: 443,
-	path: RAKUTEN_RANKING_URL
-	    + "&applicationId=" + RAKUTEN_APPLICATION_ID 
-        + "&" + "genreId=101263",
+	//path: RAKUTEN_RANKING_URL
+	   // + "&applicationId=" + RAKUTEN_APPLICATION_ID 
+        //+ "&" + "genreId=101263" +"&" + "page=1",
+    path: query,    
 	method: 'GET'
     };
 	console.log('options.path: ' + options.path);
@@ -312,6 +313,50 @@ function getIsbnFromCaption( caption ){
         console.log("[invalid ISBN]this caption has invalid ISBN!! isbn = " + isbn + " caption=" + caption);
         return "";
     }
+}
+
+//////////////////////////////////////////////////////////////////////
+// リクエストURL生成
+//////////////////////////////////////////////////////////////////////
+function makeUrl( age, page ){
+
+    
+    var AGE_0_2 = 1;    //0-2歳
+    var AGE_3_6 = 2;    //3-6歳
+    var AGE_7_9 = 3;    //小学校低学年
+    var AGE_10_12 = 4;  //小学校高学年
+    var AGE_13_15 = 5;  //中学生
+    
+    var RAKUTEN_GENRU_EHON = "101263";  //絵本
+    var RAKUTEN_GENRU_JIDOSHO = "101260";  //児童書
+    var RAKUTEN_GENRU_JIDOBUNKO = "208869";  //児童文庫
+    
+    var url;
+    var rakuten_genruId;
+    
+    
+    switch( age ){
+        case AGE_3_6:
+        case AGE_7_9:
+            rakuten_genruId = RAKUTEN_GENRU_EHON;
+            break;
+        case AGE_10_12:
+            rakuten_genruId = RAKUTEN_GENRU_JIDOSHO;
+            break;
+        case AGE_13_15:
+            rakuten_genruId = RAKUTEN_GENRU_JIDOBUNKO;
+            break;
+        default:
+            rakuten_genruId = RAKUTEN_GENRU_EHON;
+            break;
+    }
+    
+    url = RAKUTEN_RANKING_URL + "&applicationId=" + RAKUTEN_APPLICATION_ID 
+        + "&" + "genreId=" + rakuten_genruId + "&page=" + page;
+    
+    if(DEBUG)   console.log("url=" + url);
+    
+    return( url );
 }
 
 // debug用
