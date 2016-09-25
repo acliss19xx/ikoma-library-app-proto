@@ -240,8 +240,15 @@ function get_bookinfo_about_lib_with_arg( booklist, Setting, retry_flag ){
                         dfd_calil.reject();
                         return;
                     }else{
+                        
+                        /* なぜか生駒市でもnode.jsでは30件返ってくるようなので再開処理やめる
                         calil_session_status = CALIL_STATUS_API_RE_REQUESTING;
                         retry_calil( Setting, FLAG_1st_CALL );
+                        */
+                        
+                        dfd_calil.resolve();    //全件完了！
+                        calil_session_status = CALIL_STATUS_DONE;
+                        return;
                     }
                 }
                 else{
