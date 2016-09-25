@@ -35,23 +35,42 @@ global.DEBUG=1;
 global.NOT_NODEJS = 1;
 var BOOK_LIST_NUM =  30;    //１画面に取得/表示する本の数
 
+global.IKOMA_LIB_NONE = "無し";
+global.IKOMA_LIB_1 = "北分館";
+global.IKOMA_LIB_2 = "南分館";
+global.IKOMA_LIB_3 = "生駒市図書館（本館）";
+global.IKOMA_LIB_4 = "生駒駅前図書室";
+global.IKOMA_LIB_5 = "鹿ノ台ふれあいホール";
+//global.IKOMA_LIB_6 = "奈良先端科学技術大学院大学";   //普通の人は借りれないので利用しない。カーリルで取得は可能
+
+global.LIB_STATUS_NOTHING = 0;         //図書館無
+global.LIB_STATUS_ENABLE_LEND = 1;     //図書館貸出可能
+global.LIB_STATUS_ENABLE_RESEARVE = 2; //図書館在庫無。予約可能
+    
+var POINT_HIGH = 3;
+var POINT_MID = 2;
+var POINT_LOW = 1;
 
 //設定オブジェクト
 var SettingDB = function( ){
-    this.libplace = "生駒駅前図書室";   // 複数ある場合は"|"で繋ぐ。 北分館 / 南分館 / 生駒市図書館（本館）/ 生駒駅前図書室 / 鹿ノ台ふれあいホール / 奈良先端科学技術大学院大学
+    this.libplace = "生駒市図書館（本館）|鹿ノ台ふれあいホール";   // 複数ある場合は"|"で繋ぐ。 北分館 / 南分館 / 生駒市図書館（本館）/ 生駒駅前図書室 / 鹿ノ台ふれあいホール / 奈良先端科学技術大学院大学
     this.age = 1;   // 1 = ０～２歳
                     // 2 = ３歳～小学生
                     // 3 = 小１～小３
                     // 4 = 小４～小６
                     // 5 = 中１～中３
-    //重み付け　1～3
-    this.weight_rakuten = 3;
-    this.weight_is_nearest_lib = 3;
-    this.weight_is_ikoma_lib = 3;
-    this.weight_is_recommended = 3;
+    //重み付けポイント　1～3
+    this.weight_rakuten = POINT_LOW;
+    this.weight_is_nearest_lib = POINT_HIGH;         //最寄りの図書館で今すぐ借りれる
+    this.weight_canlend_nearest_lib = POINT_LOW;    //最寄りの図書館で予約可能    
+    this.weight_is_ikoma_lib = POINT_LOW;           //市図書館に本有
+    this.weight_is_recommended = POINT_HIGH;         //市図書館司書お薦め
     
 }
 
+
+global.Setting = new SettingDB();
+//Setting.weight_is_nearest_lib = 2;
 
 //本オブジェクト   http://www.ituore.com/entry/javascript-basic#データ構造
 var BookInfo = function( ){
@@ -65,11 +84,13 @@ var BookInfo = function( ){
     this.rakutenURL = "";           //楽天ページへのURL
 
     this.IsCityLib = 0;             //市図書館に該当本が有るか否か( 1=有、0=無　)
+    
     // 北分館/南分館/生駒市図書館（本館）/生駒駅前図書室/鹿ノ台ふれあいホール/奈良先端科学技術大学院大学
-    this.IsCityLibRentaledNum = 0;
-    this.IsCityLibRentaled1 = 0;     //最寄りの図書館1在庫有無( 1=貸出可能、2=貸出中、0=蔵書無　)
-    this.IsCityLibRentaled2 = 0;     //最寄りの図書館2在庫有無( 1=貸出可能、2=貸出中、0=蔵書無　)
-    this.IsCityLibRentaled3 = 0;     //最寄りの図書館3在庫有無( 1=貸出可能、2=貸出中、0=蔵書無　)
+    this.CityLibRentaledInfo = new Array();       //最寄りの図書館情報 {LIB:●●図書館, status:1} などのarray形式で格納( 1=貸出可能、2=貸出中、0=蔵書無　)
+    //this.IsCityLibRentaledNum = 0;
+    //this.IsCityLibRentaled1 = 0;     //最寄りの図書館1在庫有無( 1=貸出可能、2=貸出中、0=蔵書無　)
+    //this.IsCityLibRentaled2 = 0;     //最寄りの図書館2在庫有無( 1=貸出可能、2=貸出中、0=蔵書無　)
+    //this.IsCityLibRentaled3 = 0;     //最寄りの図書館3在庫有無( 1=貸出可能、2=貸出中、0=蔵書無　)
     this.CityLibRentalURL = "";     //図書館予約ページへのURL
     
     this.CityLibRecommended = 0;    //図書館司書お薦め=1, NOT=0
@@ -86,12 +107,31 @@ var BookInfo = function( ){
 //var booklist = new Array();
 global.booklist = new Array();
     
-for(var i = 0; i < BOOK_LIST_NUM; i++)
-    booklist[i] = new BookInfo();
+//for(var i = 0; i < BOOK_LIST_NUM; i++)  //[ToDO]途中で本の数増やせない★★課題
+//    booklist[i] = new BookInfo();
 
-global.Setting = new SettingDB();
-//var Setting = new SettingDB();
-Setting.weight_is_nearest_lib = 2;
+var m;
+var nearLib, nearLibNum=0;
+if(Setting.libplace.length != 0){
+    nearLib = Setting.libplace.split("|");
+    nearLibNum = nearLib.length;    //最寄り図書館数
+}
+
+console.log("nearLibNum=" + nearLibNum);
+ 
+
+for(var i = 0; i < BOOK_LIST_NUM; i++){  //[ToDO]途中で本の数増やせない★★課題
+    booklist[i] = new BookInfo();
+    
+    for(m=0; m<nearLibNum; m++){
+        booklist[i].CityLibRentaledInfo[m] = {
+            LIB: "IKOMA_LIB_NONE",
+            status: 0
+        };
+    }
+}
+
+
 
 //////////////////////////////////////////////////////////////////////
 // 優先度に従った本リストを提供する
@@ -102,9 +142,20 @@ module.exports.get_booklist = function(res){
 //function get_booklist( Setting, page ){	//node.jsの時にはコメントアウト(上記を有効化)
     
 	console.log("start get_booklist");
-
+/*
+    var a = ["12-3", "12+3", "12;", "12 3", "-12", "+123", " 123"];
+    //var b = parseInt(a, 10);
+    
+    for(var i=0; i< a.length; i++){
+    var b = /[^0-9|^-]/.test(a[i]);       //false=数字以外が無い
+    
+    
+    console.log(b);
+    }
+    return;
+  */  
     /* ★★★カーリルTEST ★★★ */
-    //get_bookinfo_about_lib();
+    //CalilServerConnection.get_bookinfo_about_lib();
     //return;
     /* ★★★カーリルTEST ★★★ */
     
@@ -229,7 +280,7 @@ module.exports.get_booklist = function(res){
         sort_booklist( booklist );
         
         console.log("=====================================");
-        //debug_print_console_log();
+        debug_print_console_log();
         console.log("=====================================");
         console.log("Finish!!!!");
         
@@ -302,14 +353,25 @@ function calc_allbooks_priority_point( booklist, Setting ){
     
 }
 
-//一冊の本のポイント計算
+
+
+//////////////////////////////////////////////////////////////////////
+// 1冊の本のポイント計算
+//////////////////////////////////////////////////////////////////////
 function calc_book_priority_point( bookinfo, weight_setting ){
     
     var point = 0;
     
     
-    // 最寄りの図書館にあるか否か？
-    point = bookinfo.IsCityLibRentaled1 * weight_setting.weight_is_nearest_lib;
+    // 最寄りの図書館にあるか否か？（複数図書館対応）
+    var CityLibRentaledStatus = check_CityLibRentaledStatus(bookinfo.CityLibRentaledInfo);
+    
+    if( CityLibRentaledStatus == LIB_STATUS_ENABLE_LEND ){       //今すぐ借りることが可能   
+        point += weight_setting.weight_is_nearest_lib;
+    }else if( CityLibRentaledStatus == LIB_STATUS_ENABLE_RESEARVE ){ //予約すれば最寄りの図書館で借りることが可能
+        point += weight_setting.weight_canlend_nearest_lib;
+    }
+    
     
     //市図書館にあるか否か？
     point += bookinfo.IsCityLib * weight_setting.weight_is_ikoma_lib;
@@ -364,12 +426,30 @@ function sort_booklist( sort_list ){
     
 }
 
+//////////////////////////////////////////////////////////////////////
+// 複数図書館の状況から今すぐ借りれるか否かチェック
+// return: 1=貸出可能、2=貸出中、0=蔵書無
+//////////////////////////////////////////////////////////////////////
+function check_CityLibRentaledStatus( rentaledInfo ){
+    
+    var i, better_status=0;
+    for(i=0; i<rentaledInfo.length; i++){
+        if( rentaledInfo[i].status == LIB_STATUS_ENABLE_LEND){
+            better_status = rentaledInfo[i].status;
+            return(better_status);  //今すぐ貸出可能があれば即リターン（以降チェックする必要性無）
+        }
+        else if( rentaledInfo[i].status == LIB_STATUS_ENABLE_RESEARVE){
+            better_status = rentaledInfo[i].status;
+        }
+    }
+    return(better_status);
+}
 
-
-
-// debug用
+//////////////////////////////////////////////////////////////////////
+// 本情報ログ出し for debug
+//////////////////////////////////////////////////////////////////////
 function debug_print_console_log( ){
-    var i=j=0;
+    var i=j=k=0;
     
     
     for(j=0; j< booklist.length; j++){
@@ -381,9 +461,15 @@ function debug_print_console_log( ){
         console.log("IMAGE_URL(M) = " + booklist[j].MidiumImageURL);
         console.log("RAKUTEN_URL = " + booklist[j].rakutenURL);
         console.log("IsCityLib = " + booklist[j].IsCityLib);
-        console.log("IsCityLibRentaledNum = " + booklist[j].IsCityLibRentaledNum);
-        console.log("IsCityLibRentaled1 = " + booklist[j].IsCityLibRentaled1);
-        console.log("IsCityLibRentaled2 = " + booklist[j].IsCityLibRentaled2);
+        //console.log("IsCityLibRentaledNum = " + booklist[j].IsCityLibRentaledNum);
+        //console.log("IsCityLibRentaled1 = " + booklist[j].IsCityLibRentaled1);
+        //console.log("IsCityLibRentaled2 = " + booklist[j].IsCityLibRentaled2);
+        
+        for(k=0; k<booklist[j].CityLibRentaledInfo.length; k++){
+            console.log("nearLibstatus[" + j + "]: " 
+                        + booklist[j].CityLibRentaledInfo[k].LIB + "=" + booklist[j].CityLibRentaledInfo[k].status);
+        }
+        console.log("CityLibRentalURL = " + booklist[j].CityLibRentalURL);
         console.log("CityLibRecommended = " + booklist[j].CityLibRecommended);
         console.log("CityLibComment = " + booklist[j].CityLibComment);
         console.log("CityLibCategory = " + booklist[j].CityLibCategory);
@@ -404,9 +490,14 @@ function debug_print_console_log( ){
         console.log("IMAGE_URL(M) = " + booklist[j].MidiumImageURL);
         console.log("RAKUTEN_URL = " + booklist[j].rakutenURL);
         console.log("IsCityLib = " + booklist[j].IsCityLib);
-        console.log("IsCityLibRentaledNum = " + booklist[j].IsCityLibRentaledNum);
-        console.log("IsCityLibRentaled1 = " + booklist[j].IsCityLibRentaled1);
-        console.log("IsCityLibRentaled2 = " + booklist[j].IsCityLibRentaled2);
+        //console.log("IsCityLibRentaledNum = " + booklist[j].IsCityLibRentaledNum);
+        //console.log("IsCityLibRentaled1 = " + booklist[j].IsCityLibRentaled1);
+        //console.log("IsCityLibRentaled2 = " + booklist[j].IsCityLibRentaled2);
+        for(k=0; k<booklist[j].CityLibRentaledInfo.length; k++){
+            console.log("nearLibstatus[" + j + "]: " 
+                        + booklist[j].CityLibRentaledInfo[k].LIB + "=" + booklist[j].CityLibRentaledInfo[k].status);
+        }
+        console.log("CityLibRentalURL = " + booklist[j].CityLibRentalURL);
         console.log("CityLibRecommended = " + booklist[j].CityLibRecommended);
         console.log("CityLibComment = " + booklist[j].CityLibComment);
         console.log("CityLibCategory = " + booklist[j].CityLibCategory);

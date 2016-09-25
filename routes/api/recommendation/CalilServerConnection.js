@@ -48,7 +48,10 @@ var CALIL_STATUS_RETRY_REQUESTING = 6;
 var CALIL_STATUS_ERROR = 8;
 var CALIL_STATUS_DONE = 9;
 
-
+//get_list.jsへ移動
+//var LIB_STATUS_NOTHING = 0;         //図書館無
+//var LIB_STATUS_ENABLE_LEND = 1;     //図書館貸出可能
+//var LIB_STATUS_ENABLE_RESEARVE = 2; //図書館在庫無。予約可能
 
 //////////////////////////////////////////////////////////////////////
 // 最寄りの図書館/市内図書館に該当本があるか否か(カーリルAPI) 公開関数
@@ -590,9 +593,9 @@ function setBookLibRentaledInfo( isbn, Setting, libraries, name ){
         var nearLib = Setting.libplace.split("|");
     else return;
 
-    
+    var k;
     if(DEBUG){
-        for(var k=0; k<nearLib.length; k++){
+        for(k=0; k<nearLib.length; k++){
             console.log("nearLib="+nearLib[k]);
         }
     }
@@ -618,29 +621,82 @@ function setBookLibRentaledInfo( isbn, Setting, libraries, name ){
     
     if(DEBUG)   console.log("IsCityLib=" + book.IsCityLib);
     
+    if( book.IsCityLib == 0 )   return;
+
+
     
-    var i;
-    for(i=0; i<libraries.length; i++){
-        for(j=0; j<nearLib.length; j++){
-            if( libraries[i] == nearLib[j] ){   
-                book.IsCityLibRentaled1 = checkLibRentaledStatus(name[i]);
-                //★★★★　{LIB_1: 1}のような形式に変更しよう　　LIB_1
+    var i, j;
+    var nearLibstatus;
+    
+    var CityLibRentaledInfoDetail = new Array();
+    
+    for(j=0; j<nearLib.length; j++){
+        
+        
+        nearLibstatus = { 
+            LIB: LibName2Const(nearLib[j]),
+            status: LIB_STATUS_ENABLE_RESEARVE  //最寄り図書館に無かった場合は予約可能扱い　★★[TODO]動作見て最終判断
+        };         
+        //nearLibstatus = { "nearLib[j]": LIB_STATUS_ENABLE_RESEARVE };
+        
+        
+        for(i=0; i<libraries.length; i++){
+        
+            if( libraries[i] == nearLib[j] ){   //いづれも図書館名(character形式)
+                //book.IsCityLibRentaled1 = checkLibRentaledStatus(name[i]);
                 
+                nearLibstatus = { 
+                    LIB: LibName2Const(nearLib[j]),
+                    status: checkLibRentaledStatus(name[i])
+                };
             }
             
         }
+        CityLibRentaledInfoDetail[j] = nearLibstatus;
     }
     
-    book.IsCityLibRentaledNum = nearLib.length;     //★★★★図書館２つあるケースやどう返ってくるか要確認
+    book.CityLibRentaledInfo = CityLibRentaledInfoDetail;
     
-    if(DEBUG)   console.log("IsCityLibRentaled1="+book.IsCityLibRentaled1);
+    /*
+    if(DEBUG){
+        for(j=0; j<book.CityLibRentaledInfo.length; j++){
+            console.log("表示図書館情報2");
+            console.log("nearLibstatus[" + j + "]=" + book.CityLibRentaledInfo[j].LIB + "=" + book.CityLibRentaledInfo[j].status);
+        }
+    }
+    */
     
-/*
-    this.IsCityLibRentaled1 = 0;     //最寄りの図書館1在庫有無( 1=貸出可能、2=貸出中、0=蔵書無　)
-    this.IsCityLibRentaled2 = 0;     //最寄りの図書館2在庫有無( 1=貸出可能、2=貸出中、0=蔵書無　)
-    this.IsCityLibRentaled3 = 0;     //最寄りの図書館3在庫有無( 1=貸出可能、2=貸出中、0=蔵書無　)
-  */
     
+}
+
+/* ----------------------------------------------------
+ 図書館名を定数へ変換
+------------------------------------------------------ */
+function LibName2Const(name){
+    
+    switch( name ){
+        case "北分館":
+            ret = "IKOMA_LIB_1";
+            break;
+        case "南分館":
+            ret = "IKOMA_LIB_2";
+            break;
+            
+        case "生駒市図書館（本館）":
+            ret = "IKOMA_LIB_3";
+            break;
+        case "生駒駅前図書室":
+            ret = "IKOMA_LIB_4";
+            break;
+        case "鹿ノ台ふれあいホール":
+            ret = "IKOMA_LIB_5";
+            break;
+        default:
+            ret = "IKOMA_LIB_3";
+            break;
+    }
+
+    return( ret );
 }
 
 /* ----------------------------------------------------
@@ -668,19 +724,19 @@ function checkLibRentaledStatus( word ){
     switch( word){
         case "貸出可":
         case "蔵書あり":
-            ret = 1;
+            ret = LIB_STATUS_ENABLE_LEND;
             break;
             
         case "貸出中":
         case "予約中":
         case "準備中":
         case "休館中":
-            ret = 2;
+            ret = LIB_STATUS_ENABLE_RESEARVE;
             break;
             
         case "蔵書なし":
         default:
-            ret = 0;
+            ret = LIB_STATUS_NOTHING;
             break;
     }
     return ret;
