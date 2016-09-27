@@ -342,6 +342,13 @@ td.book_big_image{
     background: #C39D67;
 	border-radius:30px;
 }
+
+    
+}
+
+/* slick 画像 */
+.slick-slide .lib_icon img {
+    display:initial;
 }
 
 /*===============================================
