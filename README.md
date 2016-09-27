@@ -31,12 +31,13 @@ $ git clone https://github.com/hiroaki-ohkawa/ikoma-library-app-proto.git
 ```
 $ cd ikoma-library-app-proto
 $ npm install
+※install はpackage.jsonの"dependencies"のライブラリ名をnpm installの後につける
 ```
 
 * WebサーバのURLを環境に合わせて修正してください
    * 修正前はherokuにデプロイして動作する設定になっています
 
-`public/javascripts/main.js`の77行目
+`public/javascripts/main.js`の●行目
 
 修正前
 
@@ -49,6 +50,21 @@ $ npm install
 ```
     var url = "http://" + location.hostname + ":3000/api/v1?" + q;
 ```
+
+`public/javascripts/main.js`の●行目
+
+修正前
+
+```
+    var url = "https://" + location.hostname + "/api/recommendation";
+```
+
+修正後
+
+```
+    var url = "http://" + location.hostname + ":3000/api/recommendation";
+```
+
 * 環境変数を設定します
    * 楽天ウェブサービスのアプリIDを設定します
    * アプリIDは各自で取得してください
@@ -68,3 +84,7 @@ $ export RAKUTEN_APP_ID=XXXXXXXXXXXXXXXXXXX
 $ ./bin/www
 ```
 
+```
+ブラウザで下記入力
+http://localhost:3000/
+```
