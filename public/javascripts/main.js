@@ -199,7 +199,7 @@ var goToDetail = function(obj) {
 
 var ajaxRecommendationApi = function() {
     var vs = localStorage.getItem('viewStyle');
-    var url = "https://" + location.hostname + "/api/recommendation";
+    var url = "http://" + location.hostname + "/api/recommendation";
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,
