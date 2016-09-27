@@ -199,7 +199,7 @@ var goToDetail = function(obj) {
 
 var ajaxRecommendationApi = function() {
     var vs = localStorage.getItem('viewStyle');
-    var url = "http://" + location.hostname + "/api/recommendation";
+    var url = "https://" + location.hostname + "/api/recommendation";
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,
@@ -236,35 +236,25 @@ var ajaxRecommendationApi = function() {
 
                       bookList.append(html_string);
 
+/*
+                        bookList.append("<input type=\"image\" src=\"" + r[i].MidiumImageURL
+                                        + "\" alt=\"" + r[i].Title
+                                        + "\" author=\"" + r[i].Author
+                                        + "\" isbn=\"" + r[i].Isbn
+                                        + "\"onClick=\"goToDetail(this)\"></input>");
+*/
                     } else if (vs == 'カルーセル') {
-                      var attr = 'src="' + r[i].MidiumImageURL + '" alt="' + r[i].Title + '"';
-                      attr += 'author="' + r[i].Author + '" isbn="' + r[i].Isbn + '"';
-                      var html_string ='<a ' + attr + ' onClick="goToDetail(this)">' + 
-                                        '<div class="bookbox">' +
-                                            '<div style="height:125px;">' +
-                                                '<img src="' + r[i].MidiumImageURL +'" height="120px">' +
-                                            '</div>' +
-                                            '<div class="book_title">' + r[i].Title + '</div>' +
-                                            '<div class="lib_icon">' +
-                                                '<img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">' +
-                                                '<img src="/images/icon_kita.png"><img src="/images/icon_minami.png">' +
-                                                '<img src="/images/icon_shika.png"><img src="/images/icon_recommend.png">' +
-                                            '</div>' +
-                                        '</div>' +
-                                    '</a>';
-
-                      bookList.append(html_string);
+                        bookList.append("<div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\">" + r[i].Title + "</div>");
                     }
                 }
 
                 if (localStorage.getItem('viewStyle') == 'カルーセル') {
                     $('.book-list').slick({
                         dots: true,
-                        infinite: true,
                         speed: 100,
-                        slidesToShow: 3,
-                        slidesToScroll: 3,
-//                        autoplay: true,
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        autoplay: true,
                     });
                 }
             },
@@ -321,23 +311,7 @@ var ajaxSearchApi = function() {
                                             + "\"onClick=\"goToDetail(this)\"></input>");
 */
                         } else if (vs == 'カルーセル') {
-                              var attr = 'src="' + r[i].MidiumImageURL + '" alt="' + r[i].Title + '"';
-                              attr += 'author="' + r[i].Author + '" isbn="' + r[i].Isbn + '"';
-                              var html_string ='<a ' + attr + ' onClick="goToDetail(this)">' + 
-                                                '<div class="bookbox">' +
-                                                    '<div style="height:125px;">' +
-                                                        '<img src="' + r[i].MidiumImageURL +'" height="120px">' +
-                                                    '</div>' +
-                                                    '<div class="book_title">' + r[i].Title + '</div>' +
-                                                    '<div class="lib_icon">' +
-                                                        '<img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">' +
-                                                        '<img src="/images/icon_kita.png"><img src="/images/icon_minami.png">' +
-                                                        '<img src="/images/icon_shika.png"><img src="/images/icon_recommend.png">' +
-                                                    '</div>' +
-                                                '</div>' +
-                                            '</a>';
-
-                      bookList.append(html_string);
+                            bookList.append("<div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\">" + obj.Items[i].title + "</div>");
                         }
                     }
                     if (localStorage.getItem('viewStyle') == 'カルーセル') {

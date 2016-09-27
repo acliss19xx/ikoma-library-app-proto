@@ -252,10 +252,6 @@ div#modal div:target {
 	text-decoration:none;
 }
 
-.slick-slide img {
-    display:initial;
-}
-
 @media (min-width:640px){
 
    /* ↓ページレイアウト */
