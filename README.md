@@ -31,7 +31,6 @@ $ git clone https://github.com/hiroaki-ohkawa/ikoma-library-app-proto.git
 ```
 $ cd ikoma-library-app-proto
 $ npm install
-※install はpackage.jsonの"dependencies"のライブラリ名をnpm installの後につける
 ```
 
 * WebサーバのURLを環境に合わせて修正してください
