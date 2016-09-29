@@ -197,6 +197,32 @@ var goToDetail = function(obj) {
 */
 };
 
+var getHtmlRentaledIcons = function(info) {
+    var len = info.length;
+    var html = '', icon = '';
+    for (var i = 0; i < len; i++) {
+	if (info[i].LIB == "IKOMA_LIB_1") { icon += "icon_kita"; }
+	else if (info[i].LIB == "IKOMA_LIB_2") { icon += "icon_minami"; }
+	else if (info[i].LIB == "IKOMA_LIB_3") { icon += "icon_ikoma"; }
+	else if (info[i].LIB == "IKOMA_LIB_4") { icon += "icon_eki"; }
+	else if (info[i].LIB == "IKOMA_LIB_5") { icon += "icon_shika"; }
+	else { console.log("Error: getHtmlRentaledIcons(1): " + info[i].LIB); continue; }
+	switch (info[i].status) {
+	case 0: icon += "_off.png"; break;
+	case 1: icon += "_on.png"; break;
+	case 2: icon += ".png"; break;
+	default: console.log("Error: getHtmlRentaledIcons(2): " + info[i].status); break;
+	}
+	html += "<img src=\"/images/" + icon + "\">";
+	icon = ''; // clear value
+    }
+    return html;
+};
+
+var getHtmlRecommended = function(rcmd) {
+    return rcmd == 1 ? '<img src="/images/icon_recommend.png">' : '';
+}
+
 var ajaxRecommendationApi = function() {
     var vs = localStorage.getItem('viewStyle');
     var url = (location.hostname == "localhost") ? "http://localhost:3000/api/recommendation" : "https://" + location.hostname + "/api/recommendation";
@@ -227,9 +253,8 @@ var ajaxRecommendationApi = function() {
                                             '</div>' +
                                             '<div class="book_title">' + r[i].Title + '</div>' +
                                             '<div class="lib_icon">' +
-                                                '<img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">' +
-                                                '<img src="/images/icon_kita.png"><img src="/images/icon_minami.png">' +
-                                                '<img src="/images/icon_shika.png"><img src="/images/icon_recommend.png">' +
+			                        getHtmlRentaledIcons(r[i].CityLibRentaledInfo) + 
+                                                getHtmlRecommended(r[i].CityLibRecommended) +
                                             '</div>' +
                                         '</div>' +
                                     '</a>';
