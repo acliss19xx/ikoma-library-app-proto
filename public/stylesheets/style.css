@@ -342,6 +342,38 @@ td.book_big_image{
     background: #C39D67;
 	border-radius:30px;
 }
+
+    
+}
+
+.slick-prev:before,
+.slick-next:before
+{
+    color: rgba(46, 100, 254, 0.7);
+}
+
+
+.slick-dots li button:before
+{
+    color: #2E64FE;
+}
+
+.slick-dots li.slick-active button:before
+{
+    color: #2E64FE;
+}
+
+.slick-prev {
+    left: 15px;
+}
+
+.slick-next {
+    right: 15px;
+}
+
+/* slick 画像 */
+.slick-slide .lib_icon img {
+    display:initial;
 }
 
 /*===============================================
