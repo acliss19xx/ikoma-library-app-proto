@@ -337,14 +337,14 @@ var ajaxSearchApi = function() {
                         if (vs == 'ノーマル') {
                           bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
                         } else if (vs == 'タイル') {
-                          var attr = 'src="' + r[i].MidiumImageURL + '" alt="' + r[i].Title + '"';
-                          attr += 'author="' + r[i].Author + '" isbn="' + r[i].Isbn + '"';
+                          var attr = 'src="' + obj.Items[i].mediumImageUrl + '" alt="' + obj.Items[i].title + '"';
+                          attr += 'author="' + obj.Items[i].author + '" isbn="' + obj.Items[i].isbn + '"';
                           var html_string ='<a ' + attr + ' onClick="goToDetail(this)">' + 
                                             '<div class="bookbox">' +
                                                 '<div style="height:125px;">' +
-                                                    '<img src="' + r[i].MidiumImageURL +'" height="120px">' +
+                                                    '<img src="' + obj.Items[i].mediumImageUrl +'" height="120px">' +
                                                 '</div>' +
-                                                '<div class="book_title">' + r[i].Title + '</div>' +
+                                                '<div class="book_title">' + obj.Items[i].title + '</div>' +
                                                 '<div class="lib_icon">' +
                                                     '<img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">' +
                                                     '<img src="/images/icon_kita.png"><img src="/images/icon_minami.png">' +
@@ -360,7 +360,7 @@ var ajaxSearchApi = function() {
                             '<table class="book_info">' + 
                                 '<tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>' +
                                 '<tr>' + 
-                                    '<td class="book_big_image" style="background-image:url(' + r[i].MidiumImageURL + '); background-size: contain; background-repeat:no-repeat;">' + 
+                                    '<td class="book_big_image" style="background-image:url(' + obj.Items[i].mediumImageUrl + '); background-size: contain; background-repeat:no-repeat;">' + 
                                     '</td>' + 
                                     '<td>' + 
                                         '<a href="#"><img src="/images/koreyomo.png"></a>' + 
@@ -368,11 +368,11 @@ var ajaxSearchApi = function() {
                                 '</tr>' + 
                                 '<tr>' + 
                                     '<td class="heading_td">タイトル：</td>' + 
-                                    '<td colspan="2">'+ r[i].Title + '</td>' + 
+                                    '<td colspan="2">'+ obj.Items[i].title + '</td>' + 
                                 '</tr>' + 
                                 '<tr>' + 
                                     '<td class="heading_td">作：</td>' + 
-                                    '<td>' + r[i].Author + '</td>' + 
+                                    '<td>' + obj.Items[i].author + '</td>' + 
                                 '</tr>' + 
                                 '<tr>' + 
                                     '<td class="heading_td">蔵書図書館：</td>' + 
