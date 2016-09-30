@@ -199,7 +199,7 @@ var goToDetail = function(obj) {
 
 var ajaxRecommendationApi = function() {
     var vs = localStorage.getItem('viewStyle');
-    var url = "https://" + location.hostname + "/api/recommendation";
+    var url = (location.hostname == "localhost") ? "http://localhost:3000/api/recommendation" : "https://" + location.hostname + "/api/recommendation";
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,
@@ -319,7 +319,7 @@ var ajaxSearchApi = function() {
         if (q.length > 12) q += '&';
         q += '&publisherName=' + publisherName;
     }
-    var url = "https://" + location.hostname + "/api/v1?" + q;
+    var url = (location.hostname == "localhost") ? "http://localhost:3000/api/v1?" + q : "https://" + location.hostname + "/api/v1?" + q;
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,
