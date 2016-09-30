@@ -1,3 +1,6 @@
+window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
+var gSpeechRecognition = new webkitSpeechRecognition();
+
 var clearChildren = function() {
     var main = $("#main");
     var result = $("#result");
@@ -58,13 +61,22 @@ var onSetAge = function() {
     if (age_7_10 == 'checked') { localStorage.setItem('age', '7-10'); }
     if (age_11_13 == 'checked') { localStorage.setItem('age', '11-13'); }
     localStorage.setItem('initialized', 'true');
-    goToSearch();    
+    goToGenreSelection();
 };
 
 var setSearchOptions = function() {
     localStorage.setItem('optionTitle', $("#optionTitle")[0].value);
     localStorage.setItem('optionAuthor', $("#optionAuthor")[0].value);
     localStorage.setItem('optionPublisherName', $("#optionPublisherName")[0].value);
+};
+
+var goToGenreSelection = function() {
+    clearChildren();
+    var main = $("#main");
+    main.append("<input type=\"button\" value=\"おすすめ\" onClick=\"onSearchRecommendation()\" style=\"width: 90px; height: 90px\">");
+    main.append("<input type=\"button\" value=\"どうぶつ\" onClick=\"onSearchGenreAnimal()\" style=\"width: 90px; height: 90px\">");
+    main.append("<input type=\"button\" value=\"のりもの\" onClick=\"onSearchGenreVehicle()\" style=\"width: 90px; height: 90px\"><br/>");
+    main.append("<img id=\"mic\" src=\"/images/mic.png\" onClick=\"onSearchBySpeech()\" style=\"width: 90px; height: 90px\">");
 };
 
 var goToSearch = function() {
@@ -462,6 +474,34 @@ var onSearch = function() {
     }
 };
 
+var onSearchBySpeech = function() {
+    $('#mic').attr({disabled: true});
+    gSpeechRecognition.start();
+};
+
+var onSearchRecommendation = function() {
+    clearChildren();
+    localStorage.setItem('optionIsRecommendation', 'ON');
+    ajaxRecommendationApi();
+};
+
+var onSearchTitle = function(genre) {
+    clearChildren();
+    localStorage.setItem('optionIsRecommendation', 'OFF');
+    localStorage.setItem('optionTitle', genre);
+    localStorage.setItem('optionAuthor', '');
+    localStorage.setItem('optionPublisherName', '');
+    ajaxSearchApi();
+};
+
+var onSearchGenreAnimal = function() {
+    onSearchTitle('どうぶつ');
+};
+
+var onSearchGenreVehicle = function() {
+    onSearchTitle('のりもの');
+};
+
 var setViewStyle = function(s) {
     localStorage.setItem('viewStyle', s);
     $("#viewStyle").text('表示形式:' + s);
@@ -492,6 +532,19 @@ var setOptionLibraries = function(s) {
 };
 
 $(function() {
+    gSpeechRecognition.lang = 'ja';
+    gSpeechRecognition.onresult = function(event){
+	var text = event.results.item(0).item(0).transcript;
+	onSearchTitle(text);
+    };
+    //gSpeechRecognition.onaudiostart = function(event){ console.log("onaudiostart"); };
+    //gSpeechRecognition.onsoundend = function(event){ console.log("onsoundend"); };
+    //gSpeechRecognition.onaudioend = function(event){ console.log("onaudioend"); };
+    //gSpeechRecognition.onnomatch = function(event){ console.log("onnomatch"); };
+    gSpeechRecognition.onend = function(event){
+	$('#mic').attr({disabled: false});
+    };
+
     var isRecommendation = localStorage.getItem('optionIsRecommendation');
     if (isRecommendation == null) { localStorage.setItem('optionIsRecommendation', 'ON'); }
     var vs = localStorage.getItem('viewStyle');
@@ -502,6 +555,6 @@ $(function() {
     if (initialized == null) {
 	createInitialSetLibraries();
     } else {
-	goToSearch();
+	goToGenreSelection();
     }
 });
