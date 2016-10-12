@@ -4,6 +4,7 @@
 
 var http = require('http');
 var $ = require('jquery-deferred');
+var _ = require('underscore');
 
 // 生駒市オープンデータ　図書館司書お薦め本取得URL。
 // DKANを用いてcode for 生駒が提供。
@@ -270,6 +271,8 @@ function get_LibRecommended_server_data( age, retry_flag ){
                 dfd_flag = 1;
                 dfd_librecom.resolve();
                 
+                if(DEBUG)   debug_consoleLogOUTPUT( CashedBooks );
+                
             }
             
             
@@ -441,9 +444,27 @@ function check_ValidIsbn(isbn){
 // Return 1=続き有　0=続き無
 ////////////////////////////////////////////////////////
 function is_continue( data ){
+    var IS_CONTINUE = 1;
+    var NOT_CONTINUE = 0;
+    var ret = NOT_CONTINUE;
+    var data_num;
 
-    /* ★★★★　実装要 ★★★★ */
-    return 0;
+    if( _.has( data.result, 'limit') ){
+            data_num = data.result.limit;
+    }else{
+        console.log("LibRecomend: 異常データ！need to check data.");
+        return( ret );
+    }
+            
+    
+    if( data_num >= SESSION_LIMIT_NUM ){
+        ret = IS_CONTINUE;
+    }else{
+        ret = NOT_CONTINUE;
+    }
+        
+    if(DEBUG)   console.log("LibRecomend: 続き=" + ret);
+    return ret;
     
 }
 
@@ -456,28 +477,34 @@ function set_LibRecommended_to_cashe( data ){
     
 
     var max_count;
-    if( data.result.total >= 100 ){
+    if( _.has( data.result, 'limit') ){
         max_count = data.result.limit;
-    }else max_count = data.result.total;
+        /*
+        if( data.result.total >= SESSION_LIMIT_NUM ){
+            max_count = data.result.limit;
+        }else{ 
+            max_count = data.result.total;
+        }*/
+        
+    }else{
+        console.log("LibRecomend: 異常データ！need to check data.");
+        return;
+    }
+    
+    var already_len = CashedBooks.length;
     
     for(i = 0; i < max_count; i++){
-        CashedBooks[i] = new CashedRecomBook();
+        CashedBooks[ already_len +i ] = new CashedRecomBook();
         
-        CashedBooks[i].isbn10 = ISBN13_to_ISBN10( data.result.records[i].Isbn );    //ISBN10フォーマット(ハイフン無)に変換して格納
-        CashedBooks[i].title = data.result.records[i].Title1;
-        CashedBooks[i].author = data.result.records[i].author1;
-        CashedBooks[i].publisherName = data.result.records[i].publisher;
-        CashedBooks[i].libcomment = data.result.records[i].comment;
-        CashedBooks[i].libcategory = data.result.records[i].category;
+        CashedBooks[ already_len +i ].isbn10 = ISBN13_to_ISBN10( data.result.records[i].Isbn );    //ISBN10フォーマット(ハイフン無)に変換して格納
+        CashedBooks[ already_len +i ].title = data.result.records[i].Title1;
+        CashedBooks[ already_len +i ].author = data.result.records[i].author1;
+        CashedBooks[ already_len +i ].publisherName = data.result.records[i].publisher;
+        CashedBooks[ already_len +i ].libcomment = data.result.records[i].comment;
+        CashedBooks[ already_len +i ].libcategory = data.result.records[i].category;
         
     }
         
-        /*
-        console.log("ISBN=" + data.result.records[0].isbn10);
-        console.log("Title=" + data.result.records[0].title1);
-        console.log("ISBN=" + data.result.records[60].isbn10);
-        console.log("Title=" + data.result.records[60].title1);
-        */
     
 }
 
@@ -485,12 +512,20 @@ function set_LibRecommended_to_cashe( data ){
 // キャッシュ削除
 ////////////////////////////////////////////////////////
 function clear_LibRecommended_from_cashe( ){
+    var i;
+    var len = CashedBooks.length;
+    
+    for(i=0; i<len; i++ ){
+        CashedBooks[i] = void 0;
+    }
+    if(DEBUG)   console.log("cashed len = " + CashedBooks.length);
     
 }
 
 function debug_consoleLogOUTPUT( CashedBooks ){
     
     var i=j=0;
+    console.log("======= Lib Recomend cashe START ========");
     for(i=0; i<2; i++){
         console.log("len="+CashedBooks.length);
         console.log("ISBN="+ CashedBooks[j].isbn10);
@@ -501,8 +536,7 @@ function debug_consoleLogOUTPUT( CashedBooks ){
         console.log("libcategory="+ CashedBooks[j].libcategory);
         j=CashedBooks.length-1;
     }
-                
-    
+    console.log("======= Lib Recomend cashe END ===========");
     
 }
 
