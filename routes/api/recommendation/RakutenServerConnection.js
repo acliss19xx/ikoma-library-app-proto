@@ -138,6 +138,8 @@ function parse_and_set_rakuten_data( json, booklist ){
 
     for( i=0; i< json.Items.length; i++){   //取得した本の件数分ループ
         
+    try{
+        
     if( _.has( json.Items[i], 'Item') ){    //楽天ランキングフォーマット
             
 
@@ -236,6 +238,11 @@ function parse_and_set_rakuten_data( json, booklist ){
         }
         
             
+    }
+        
+    }catch(e){  /////////////// try-catchここまで
+        console.log("FATAL ERROR !!!!!!!!!!!!!!!!! need to investigate!!!");
+            console.log(e);
     }
     
     
