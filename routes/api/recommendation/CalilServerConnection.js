@@ -38,7 +38,7 @@ var dfd_calil;
 var calil_books_status = new Array();
 var calil_session_status;
 var calil_sessionid;
-var session_retry_counter=0;
+//var session_retry_counter=0;
 
 var CALIL_STATUS_INIT = 0;
 var CALIL_STATUS_API_REQUESTING = 1;
@@ -128,10 +128,6 @@ function get_bookinfo_about_lib_with_arg( booklist, Setting, retry_flag ){
     
     //var calil_status_obj = { isbn:"", status:0, SessionId:"" };
     
-    if(DEBUG=1){
-        console.log("Setting.age = "+Setting.age);
-    }
-    
     /*
     if( BookInfo.Isbn.length == 0 ){    //10桁、13桁もチェックした方が望ましい
         calil_status_obj.status = CALIL_STATUS_ERROR;
@@ -167,6 +163,11 @@ function get_bookinfo_about_lib_with_arg( booklist, Setting, retry_flag ){
     var query = makeUrl( session, query_isbns );
     //var query = makeUrl( session, BookInfo.Isbn );
     
+    if(query==""){
+        calil_session_status = CALIL_STATUS_ERROR;
+        dfd_calil.reject();
+        return;
+    }
     
     /* =========== NODEJS 非利用時はコメントアウト(ajax利用)=============== */
     
@@ -187,7 +188,7 @@ function get_bookinfo_about_lib_with_arg( booklist, Setting, retry_flag ){
 	r.on('end', function() {   //カーリルAPIからデータ取得成功！
 		if(DEBUG=1)  console.log("CALIL API done!");
 
-		console.log("json=" + json);
+		//console.log("json=" + json);
         
         if( json.indexOf('<html>') != -1){      //htmlでエラーが返る場合がある
             console.log("temporary error.");
@@ -201,7 +202,16 @@ function get_bookinfo_about_lib_with_arg( booklist, Setting, retry_flag ){
             //return( calil_status_obj );
         }
         
-	    var data = JSON.parse(json);
+        try{
+            //jsonの解析
+            var data = JSON.parse(json);
+            
+        }catch(e){
+            console.log("JSON exception");
+            calil_session_status = CALIL_STATUS_ERROR;
+            dfd_calil.reject();
+            return;
+        }
         
 	    if (typeof data === 'undefined') {
             if(DEBUG=1){
@@ -458,12 +468,15 @@ function get_query_isbns(){
 function makeUrl( session, isbn ) {
     var url;
     if( session.length == 0 ) { //最初のアクセス時
-        url = CALIL_API_URL + "appkey="+ APP_KEY + "&isbn=" + isbn + "&systemid=" + SYSTEM_ID;
-    	console.log("url = " + url);
-    	
+        if(isbn == ""){
+            return "";
+        }else{
+            url = CALIL_API_URL + "appkey="+ APP_KEY + "&isbn=" + isbn + "&systemid=" + SYSTEM_ID;
+    	   //console.log("url = " + url);
+        }
     } else { //リトライ時(session id でアクセスする)
         url = CALIL_API_URL + "appkey="+ APP_KEY + "&session=" + session;
-    	console.log("url = " + url);
+    	//console.log("url = " + url);
     }
     return url;
 }
@@ -550,11 +563,12 @@ function parseCalil( json ) {
                             
                             setBookLibRentaledInfo( Isbn_by_calil, Setting, libraries, name );
                             
+                            /*
                             if(DEBUG){
                                 for( var i=0; i < libraries.length; i++){
                                     console.log(libraries[i] +"=" + name[i]);
                                 }
-                            }
+                            } */
                         }
                         
                         if( _.has( naraIkoma, CALIL_STATUS )){  
@@ -601,11 +615,12 @@ function setBookLibRentaledInfo( isbn, Setting, libraries, name ){
     else return;
 
     var k;
+    /*
     if(DEBUG){
         for(k=0; k<nearLib.length; k++){
             console.log("nearLib="+nearLib[k]);
         }
-    }
+    } */
     
     
     var book;
@@ -626,7 +641,7 @@ function setBookLibRentaledInfo( isbn, Setting, libraries, name ){
     else
         book.IsCityLib = 0; //市図書館に該当本無し
     
-    if(DEBUG)   console.log("IsCityLib=" + book.IsCityLib);
+    //if(DEBUG)   console.log("IsCityLib=" + book.IsCityLib);
     
     if( book.IsCityLib == 0 )   return;
 
@@ -778,7 +793,7 @@ function init_calil_books_status( booklist ){
     for(i=0; i<booklist.length; i++){
     //for(i=0; i<10; i++){
         
-        if( checkIsbn(booklist[i].Isbn) ){
+        if( checkValidIsbn(booklist[i].Isbn) ){
             calil_books_status[i] = { isbn:booklist[i].Isbn, status:CALIL_STATUS_INIT };
         }
         else{   //ISBN不正なら最初からエラーとしておく
@@ -798,11 +813,15 @@ function init_calil_books_status( booklist ){
     
 }
 
-function checkIsbn( isbn ){
+function checkValidIsbn( isbn ){
     if(( isbn == "") || (isbn == " ")){
         return 0;
     }
-    else if( /[^0-9|^-]/.test(isbn)){   //数字以外があればtrue
+    else if( /[^0-9\-x]/.test(isbn)){   //数字とハイフン、x以外があればfalse(ハイフンとxは正確には先頭に来てはダメだけどこの際良いでしょう)
+        console.log("invalid isbn: " + isbn );
+        return 0;
+    }
+    else if(isbn == "0000000000"){
         console.log("invalid isbn: " + isbn);
         return 0;
     }

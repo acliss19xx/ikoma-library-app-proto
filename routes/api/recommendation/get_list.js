@@ -23,6 +23,7 @@ var $ = require('jquery-deferred');
 var RakutenServerConnection = require('./RakutenServerConnection.js');
 var CalilServerConnection = require('./CalilServerConnection.js');
 var LibRecomend = require('./LibRecomend.js');
+var SchoolRecomend = require('./SchoolRecomend.js');
 
 
 ////// テスト用
@@ -47,9 +48,27 @@ global.LIB_STATUS_NOTHING = 0;         //図書館無
 global.LIB_STATUS_ENABLE_LEND = 1;     //図書館貸出可能
 global.LIB_STATUS_ENABLE_RESEARVE = 2; //図書館在庫無。予約可能
     
+
+global.MAX_SCHOOL_NUM = 128;   //最大学校数
+global.IKOMA_SCHOOL_DEFAULT = 0;
+
+//school 1～15 は小学校  http://www.city.ikoma.lg.jp/0000000859.html
+global.IKOMA_SCHOOL_1 = 1;
+global.IKOMA_SCHOOL_2 = 2;
+
+//school 16～30 は中学校 http://www.city.ikoma.lg.jp/0000000859.html
+
+//school 31～50 は幼稚園 http://www.city.ikoma.lg.jp/0000004137.html
+
+//school 51～80 は保育園 http://www.city.ikoma.lg.jp/0000001265.html
+global.IKOMA_SCHOOL_HOIKUEN_SAHO = 51;   //"鹿ノ台佐保保育園";
+global.IKOMA_SCHOOL = 51;   //"鹿ノ台佐保保育園";
+
 var POINT_HIGH = 3;
 var POINT_MID = 2;
 var POINT_LOW = 1;
+
+global.session_retry_counter=0;
 
 //設定オブジェクト
 var SettingDB = function( ){
@@ -97,6 +116,8 @@ var BookInfo = function( ){
     this.CityLibComment = "";       //図書館司書コメント
     this.CityLibCategory = "";      //図書館カテゴリ
     
+    this.CitySchoolRecommended = new Array();   //お薦め学校一覧　IKOMA_SCHOOL_1などの定数のarray
+    
     this.weight = 3;                //優先度ポイント（大きい方が優先度高い）
     this.Calil_retry_cnt = 0;
 }
@@ -129,12 +150,27 @@ for(var i = 0; i < BOOK_LIST_NUM; i++){  //[ToDO]途中で本の数増やせな�
             status: 0
         };
     }
+    
+    for(m=0; m< MAX_SCHOOL_NUM; m++){
+        booklist[i].CitySchoolRecommended[m] = IKOMA_SCHOOL_DEFAULT;
+    }
 }
 
 
 //本セッション固有の設定データ
 var sessionSetting = function( ){
     this.page = 1;  //表示ページ番号指定（1～30)
+    
+    this.searchkeyword = "";     //キーワード検索。指定された文字列で連想検索
+    //this.searchkeyword = "title=いないいないばあ";
+    //this.searchkeyword = "クリスマス";
+    //this.searchkeyword = "title=いないいないばあ&author=吉岡靖晃&publisherName=講談社";
+    //this.searchkeyword = "いないいないばあ";
+    // もし書名/著者/出版社指定検索ならば下記フォーマットで呼び元で指定してください。
+    // 1つの場合　title=●●
+    // 複数の場合 title=●●&author=●●&publisherName=●●
+    
+    this.historykeyword="";    //履歴キーワード検索（履歴を加味した本とそれ以外の本もおススメします）
 }
      
 global.SelectBooks = new sessionSetting();
@@ -274,7 +310,17 @@ module.exports.get_booklist = function(res){
     //　データが全て揃った
     ///////////////////////////////////
     .done(function(){
+        
+        ///////////////////////////////////
+        //　学校お薦めデータチェック（ローカルチェックなので同期型）
+        ///////////////////////////////////
+        SchoolRecomend.judge_school_recomended();
 
+        ///////////////////////////////////
+        //　不正ISBNの本はbooklistから削除(常に30冊返るわけでは無くなる)
+        ///////////////////////////////////
+        delete_invalid_booklist(booklist);
+        
         ///////////////////////////////////
         //　本毎に重み付けを考慮して優先度ポイント計算
         ///////////////////////////////////
@@ -345,6 +391,28 @@ module.exports.get_booklist = function(res){
 //}	//node.jsの時にはコメントアウト(上記を有効化)
 
 
+
+//////////////////////////////////////////////////////////////////////
+// 不正ISBNの本をリストから削除
+//////////////////////////////////////////////////////////////////////
+function delete_invalid_booklist( booklist ){
+    
+    var i;
+    
+    var max_num = booklist.length;
+    var counter=0;
+    
+    //不正isbnの本を削除
+    for(i=0; i<max_num; i++){
+        
+        if(( booklist[counter].Isbn == "" ) | (booklist[counter].Isbn == "0000000000" )){
+            booklist.splice( counter, 1 );
+            //booklist[i] = void 0;   //undefinedを代入。要素の数は変わらない
+        }
+        else    counter++;
+    }
+    
+}
 
 //////////////////////////////////////////////////////////////////////
 // 本毎に重み付けを考慮して優先度ポイント計算
@@ -458,6 +526,7 @@ function check_CityLibRentaledStatus( rentaledInfo ){
 function debug_print_console_log( ){
     var i=j=k=0;
     
+    console.log("booklist num = " + booklist.length);
     
     for(j=0; j< booklist.length; j++){
         console.log("=====" + j + "番目出力=====");
@@ -480,6 +549,11 @@ function debug_print_console_log( ){
         console.log("CityLibRecommended = " + booklist[j].CityLibRecommended);
         console.log("CityLibComment = " + booklist[j].CityLibComment);
         console.log("CityLibCategory = " + booklist[j].CityLibCategory);
+        
+        for(k=0; k<booklist[j].CitySchoolRecommended.length; k++){
+            console.log("SchoolRecommended図書館No= " + booklist[j].CitySchoolRecommended[k]);
+        }
+        
         console.log("weight = " + booklist[j].weight);
         console.log("Calil_retry_cnt = " + booklist[j].Calil_retry_cnt);
     }
@@ -508,6 +582,10 @@ function debug_print_console_log( ){
         console.log("CityLibRecommended = " + booklist[j].CityLibRecommended);
         console.log("CityLibComment = " + booklist[j].CityLibComment);
         console.log("CityLibCategory = " + booklist[j].CityLibCategory);
+        
+        for(k=0; k<booklist[j].CitySchoolRecommended.length; k++){
+            console.log("SchoolRecommended図書館No= " + booklist[j].CitySchoolRecommended[k]);
+        }
         console.log("weight = " + booklist[j].weight);
         console.log("Calil_retry_cnt = " + booklist[j].Calil_retry_cnt);
         
@@ -515,5 +593,6 @@ function debug_print_console_log( ){
     }
     */
     
+    console.log("session_retry_counter = " + session_retry_counter );
     
 }

@@ -11,7 +11,16 @@ var $ = require('jquery-deferred');
 //　・rawテーブル　→　生駒市図書館司書お薦め生データ(ISBN無)
 //　・isbnsテーブル　→本のタイトルとISBNを対にしただけのデータ　
 var LIB_RECOMENDED_DOMAIN = "data.code4ikoma.org";
-var LIB_RECOMENDED_URL = "/api/action/datastore/search.jsonp?resource_id[raw]=06d81c6f-4ac0-4877-a249-652d12f7ca1d&resource_id[isbns]=103d51c3-4b36-4ac7-b78e-66246bda85e7&join[raw]=Title1&join[isbns]=Title1";
+//var LIB_RECOMENDED_URL = "/api/action/datastore/search.jsonp?resource_id[raw]=06d81c6f-4ac0-4877-a249-652d12f7ca1d&resource_id[isbns]=103d51c3-4b36-4ac7-b78e-66246bda85e7&join[raw]=Title1&join[isbns]=Title1";
+
+var LIB_RECOMENDED_URL1 = "/api/action/datastore/search.jsonp?";
+var LIB_RECOMENDED_URL2 = "&join[raw]=Title1&join[isbns]=Title1";
+var LIB_RECOMENDED_URL3 = "&filters[Age]=";
+var LIB_RECOMENDED_URL4 = "&offset=";
+
+var DKAN_RESOURCE_ID1 = "resource_id[raw]=2fdb3a28-733d-4d22-a0a3-4df1345d2236";     //[ToDo]他データ利用の場合は変更ください
+var DKAN_RESOURCE_ID2 = "&resource_id[isbns]=dd4d9007-4bda-4826-9e06-9ab89b1f76ad";     //[ToDo]他データ利用の場合は変更ください
+
 
 
 var FILTER_AGE_BABY = "赤ちゃん";
@@ -32,7 +41,15 @@ var CashedRecomBook = function( ){
 }
 var CashedBooks = new Array();
 
+var dfd_librecom = new $.Deferred;
 var dfd_flag =0;
+
+var libRecom_retry_counter=0;       //NWアクセスリトライ回数
+var MAX_LIB_RECOM_NW_ACCESS_COUNT = 3;        //本の数により変更ください（現在の生駒市オープンデータの場合は100*3=MAX300冊)
+var SESSION_LIMIT_NUM = 100;       //1回のセッションで取得本の数
+
+var FLAG_1st_CALL = 0;
+var FLAG_RETRY = 1;
 
 ////////////////////////////////////////////////////////
 // 本１冊情報を与えて、図書館司書お薦め本か否かをBookInfoの中にセットする
@@ -41,21 +58,105 @@ var dfd_flag =0;
 // １冊目はNWから取得するかキャッシュから取得するかcheck(外部提供API)
 module.exports.judge_lib_recomended_1st = function(){
 //function judge_lib_recomended_1st( ){
-    return( judge_lib_recomended_with_arg( booklist[0], Setting ));
+    //judge_lib_recomended_with_arg( booklist[0], Setting );
+    lib_recomended_set_cache( Setting );
+    
+    if( dfd_flag == 0 )
+        return dfd_librecom.promise();
+    
 //}
 };
 
-//２冊目以降はキャッシュから取得(外部提供API)
+////////////////////////////////////////////////////////
+// キャッシュから取得(外部提供API)
+////////////////////////////////////////////////////////
 module.exports.judge_lib_recomended_from_cache = function(){
 //function judge_lib_recomended_from_cache( ){
     var i;
     
     if(DEBUG)   console.log("judge_lib_recomended_from_cache called");;
-    for (i = 1; i<booklist.length; i++)
-        return( judge_lib_recomended_with_arg( booklist[i], Setting ));
+    for (i = 0; i<booklist.length; i++)
+        //return( judge_lib_recomended_with_arg( booklist[i], Setting ));
+        judge_lib_recomended_with_arg( booklist[i], Setting );
+    
+    dfd_librecom.resolve();
+    dfd_flag = 1;
+    
 //}
 };
 
+
+////////////////////////////////////////////////////////
+// データ取得してキャッシュへ格納(内部関数)
+////////////////////////////////////////////////////////
+function lib_recomended_set_cache( Setting ){
+    
+    if(DEBUG=1){
+        console.log("judge_lib_recomended call");
+        console.log("Setting.age = "+Setting.age);
+        console.log("previous_search_age =" +previous_search_age);
+    }
+
+    
+    //var dfd_librecom = new $.Deferred;
+    
+    
+    if( Setting.age == previous_search_age ){
+        
+        //キャッシュに既にあるので何もしない
+        console.log("Already cached. Let's get from cache.");
+        
+        //前回と同様検索条件(年齢層)ならばキャッシュから取得
+        //get_LibRecommended_from_cashe( BookInfo );
+        
+        
+        //dfd_librecom.resolve();
+        //dfd_flag = 1;
+        
+    }
+    else{
+        // webAPIから取得
+        
+        //var dfd_librecom;
+        get_LibRecommended_server_data( Setting.age, FLAG_1st_CALL );
+        //get_LibRecommended_server_data( Setting.age, dfd_librecom, retry_flag );
+    }
+
+    //if( dfd_flag == 0 )
+    //    return dfd_librecom.promise();
+        
+}
+
+
+
+////////////////////////////////////////////////////////
+// キャッシュからデータ取得(内部関数)
+////////////////////////////////////////////////////////
+function lib_recomended_get_cache( BookInfo, Setting ){
+    
+    if( Setting.age == previous_search_age ){
+        
+        //前回と同様検索条件(年齢層)ならばキャッシュから取得
+        get_LibRecommended_from_cashe( BookInfo );
+        
+        
+        //dfd_librecom.resolve();
+        //dfd_flag = 1;
+        
+    }else{
+        console.log("lib_recomended_get_cache: ERROR");
+        console.log("Setting.age = "+Setting.age+" previous_search_age =" +previous_search_age);
+
+    }
+
+        
+}
+
+
+
+////////////////////////////////////////////////////////
+// オリジナル(使用しない)　　これを上記lib_recomended_set_cache()とlib_recomended_get_cache()に分割
+////////////////////////////////////////////////////////
 function judge_lib_recomended_with_arg( BookInfo, Setting ){
     
     if(DEBUG=1){
@@ -65,7 +166,7 @@ function judge_lib_recomended_with_arg( BookInfo, Setting ){
     }
 
     
-    var dfd_librecom = new $.Deferred;
+    //var dfd_librecom = new $.Deferred;
     
     
     /*
@@ -74,36 +175,41 @@ function judge_lib_recomended_with_arg( BookInfo, Setting ){
     } */
     
     if( Setting.age == previous_search_age ){
-        console.log("来ないはず");
         
         //前回と同様検索条件(年齢層)ならばキャッシュから取得
         get_LibRecommended_from_cashe( BookInfo );
         
         
-        dfd_librecom.resolve();
+        //dfd_librecom.resolve();
+        //dfd_flag = 1;
         
     }
     else{
         // webAPIから取得
         
-        var dfd_librecom;   //★★★ダミーです。後で変更要
+        //var dfd_librecom;
         get_LibRecommended_server_data( BookInfo, Setting.age, dfd_librecom );
     }
 
-    if( dfd_flag == 0 )
-        return dfd_librecom.promise();
+    //if( dfd_flag == 0 )
+    //    return dfd_librecom.promise();
         
 }
 
-function get_LibRecommended_server_data( BookInfo, age, dfd_librecom ){
+function get_LibRecommended_server_data( age, retry_flag ){
     
-
-    var age_filter_word = ageSetting2filterword( age );
+    if( retry_flag == FLAG_1st_CALL ){
+        clear_LibRecommended_from_cashe();
+        previous_search_age = age;
+    }
+    
+    var offset = libRecom_retry_counter * SESSION_LIMIT_NUM;
+    var query = makeUrl( age, offset );
     
     /* ======== ajaxを使わない(ここから)  for node.js ================*/
     var options = {
 	host: LIB_RECOMENDED_DOMAIN,
-	path: LIB_RECOMENDED_URL + "&filters:" + age_filter_word,
+	path: query,
 	method: 'GET'
     };
 	console.log('options.path: ' + options.path);
@@ -131,18 +237,41 @@ function get_LibRecommended_server_data( BookInfo, age, dfd_librecom ){
         }
         else{
             //キャッシュへバックアップ
-            clear_LibRecommended_from_cashe();
+            //clear_LibRecommended_from_cashe();    //初回のみクリアするので場所移動
+            //previous_search_age = age;
             set_LibRecommended_to_cashe( data );
-            previous_search_age = age;
+            
 
             if(DEBUG)   console.log("age=" + age);  //もしかしたらコールバックではageが取得できないかもしれない
 
+            
+            /* ------ 初回はキャッシュへバックアップするのみへ変更
             //BookInfo objectへデータセット(上記セットしたキャッシュから取得)
             get_LibRecommended_from_cashe( BookInfo );
-
+            ---------------- */
             
-            dfd_librecom.resolve();
-            dfd_flag = 1;
+            if( is_continue( data ) ){
+                //続き有の場合は再度NWアクセス
+                
+                if( libRecom_retry_counter < MAX_LIB_RECOM_NW_ACCESS_COUNT ){
+                    setTimeout( function(){
+                        retry_libRecom( age, FLAG_RETRY )
+                    }, 100 );
+                    
+                }else{  //来ないはず
+                    console.log("MAX RETRY COUNT ERROR. need to check data");
+                    dfd_flag = 1;
+                    dfd_librecom.resolve();
+                }
+                
+                
+            }else{
+                //続き無の場合は終了
+                dfd_flag = 1;
+                dfd_librecom.resolve();
+                
+            }
+            
             
         }
         
@@ -192,6 +321,38 @@ function get_LibRecommended_server_data( BookInfo, age, dfd_librecom ){
     ================== nodejsはajax使えない???(ここから) ================== */
 }
 
+////////////////////////////////////////////////////////
+// リトライ
+////////////////////////////////////////////////////////
+var retry_libRecom = function( age, retry_flag ){
+    libRecom_retry_counter++;
+    get_LibRecommended_server_data( age, retry_flag );
+}
+
+
+////////////////////////////////////////////////////////
+// 要求URL作成
+////////////////////////////////////////////////////////
+function makeUrl( age, offset ){
+    
+    var url;
+    
+    url = LIB_RECOMENDED_URL1 + DKAN_RESOURCE_ID1 + DKAN_RESOURCE_ID2 + LIB_RECOMENDED_URL2 
+        + LIB_RECOMENDED_URL3 + ageSetting2filterword(age) + LIB_RECOMENDED_URL4 + offset;
+    
+    if(DEBUG)   console.log("URL=" + url);
+    
+    //URL encode (日本語が入っているため)
+    var query = encodeURI( url );
+    
+    return( query );
+    
+    //参考：http://data.code4ikoma.org/api/action/datastore/search.json?resource_id[raw]=2fdb3a28-733d-4d22-a0a3-4df1345d2236&resource_id[isbns]=dd4d9007-4bda-4826-9e06-9ab89b1f76ad&join[raw]=Title1&join[isbns]=Title1&filters[Age]=３さいから&offset=0;
+}
+
+////////////////////////////////////////////////////////
+// 年齢層フィルターword
+////////////////////////////////////////////////////////
 function ageSetting2filterword( age ){
     switch(age){
         case 1:
@@ -221,7 +382,7 @@ function ageSetting2filterword( age ){
 ////////////////////////////////////////////////////////
 function get_LibRecommended_from_cashe( data ){
     
-    debug_consoleLogOUTPUT( CashedBooks );
+    //if(DEBUG)   debug_consoleLogOUTPUT( CashedBooks );
     //if(DEBUG)   console.log("target ISBN=" +data.Isbn );
     
     var input_data_isbn10;
@@ -234,7 +395,14 @@ function get_LibRecommended_from_cashe( data ){
         input_data_isbn10 = input_data_isbn;
     }
     
+    if(!check_ValidIsbn(input_data_isbn10)){
+        data.CityLibRecommended = 0;
+        return;
+    }
+    
     for(i=0; i<CashedBooks.length; i++){
+        
+        //console.log("rakuten="+input_data_isbn10 + "  shisho=" + CashedBooks[i].isbn10 );
         
         //入力データがキャッシュにあるか否かチェック（キャッシュはISBN10フォーマット)
         if( input_data_isbn10 == CashedBooks[i].isbn10 ){
@@ -254,6 +422,32 @@ function get_LibRecommended_from_cashe( data ){
 }
 
 ////////////////////////////////////////////////////////
+// ISBNチェック
+////////////////////////////////////////////////////////
+function check_ValidIsbn(isbn){
+    var ret;
+    
+    if((isbn=="") || (isbn == " "))
+        return 0;
+    else if(isbn=="0000000000")
+        return 0;
+    else
+        return 1;
+}
+
+
+////////////////////////////////////////////////////////
+// JSONデータから続きの有無をチェック
+// Return 1=続き有　0=続き無
+////////////////////////////////////////////////////////
+function is_continue( data ){
+
+    /* ★★★★　実装要 ★★★★ */
+    return 0;
+    
+}
+
+////////////////////////////////////////////////////////
 // キャッシュへお薦め本情報セット
 ////////////////////////////////////////////////////////
 function set_LibRecommended_to_cashe( data ){
@@ -261,9 +455,12 @@ function set_LibRecommended_to_cashe( data ){
     //if(DEBUG=1)     console.log ("total=" + data.result.total );
     
 
+    var max_count;
+    if( data.result.total >= 100 ){
+        max_count = data.result.limit;
+    }else max_count = data.result.total;
     
-    
-    for(i = 0; i < data.result.total; i++){
+    for(i = 0; i < max_count; i++){
         CashedBooks[i] = new CashedRecomBook();
         
         CashedBooks[i].isbn10 = ISBN13_to_ISBN10( data.result.records[i].Isbn );    //ISBN10フォーマット(ハイフン無)に変換して格納
