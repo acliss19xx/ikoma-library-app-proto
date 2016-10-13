@@ -242,7 +242,8 @@ function parse_and_set_rakuten_data( json, booklist ){
         
     }catch(e){  /////////////// try-catchここまで
         console.log("FATAL ERROR !!!!!!!!!!!!!!!!! need to investigate!!!");
-            console.log(e);
+        console.log("[FATAL]"+ i + "番目のデータでエラー");
+        console.log(JSON.stringify(json.Items[i]));
     }
     
     

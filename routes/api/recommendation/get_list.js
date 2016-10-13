@@ -127,9 +127,7 @@ var BookInfo = function( ){
 //ToDo★★★★★★もうちょっとうまいオブジェクト型配列作り方ない？　＞大川さん猪上さん
 //var booklist = new Array();
 global.booklist = new Array();
-    
-//for(var i = 0; i < BOOK_LIST_NUM; i++)  //[ToDO]途中で本の数増やせない★★課題
-//    booklist[i] = new BookInfo();
+
 
 var m;
 var nearLib, nearLibNum=0;
@@ -140,7 +138,7 @@ if(Setting.libplace.length != 0){
 
 console.log("nearLibNum=" + nearLibNum);
  
-
+/*
 for(var i = 0; i < BOOK_LIST_NUM; i++){  //[ToDO]途中で本の数増やせない★★課題
     booklist[i] = new BookInfo();
     
@@ -155,7 +153,33 @@ for(var i = 0; i < BOOK_LIST_NUM; i++){  //[ToDO]途中で本の数増やせな�
         booklist[i].CitySchoolRecommended[m] = IKOMA_SCHOOL_DEFAULT;
     }
 }
+*/
 
+function init_booklist(){
+    
+    //テーブル初期化
+    if( booklist.length != 0 ){
+        while( booklist.length > 0 ){
+            booklist.pop();
+        }
+    }
+    
+    for(var i = 0; i < BOOK_LIST_NUM; i++){  //[ToDO]途中で本の数増やせない★★課題
+        booklist[i] = new BookInfo();
+
+        for(m=0; m<nearLibNum; m++){
+            booklist[i].CityLibRentaledInfo[m] = {
+                LIB: "IKOMA_LIB_NONE",
+                status: 0
+            };
+        }
+
+        for(m=0; m< MAX_SCHOOL_NUM; m++){
+            booklist[i].CitySchoolRecommended[m] = IKOMA_SCHOOL_DEFAULT;
+        }
+    }
+    
+}
 
 //本セッション固有の設定データ
 var sessionSetting = function( ){
@@ -185,6 +209,7 @@ module.exports.get_booklist = function(res){
 //function get_booklist( Setting, page ){	//node.jsの時にはコメントアウト(上記を有効化)
     
 	console.log("start get_booklist");
+    init_booklist();
 /*
     var a = ["12-3", "12+3", "12;", "12 3", "-12", "+123", " 123"];
     //var b = parseInt(a, 10);

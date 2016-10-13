@@ -78,7 +78,8 @@ module.exports.judge_lib_recomended_from_cache = function(){
     if(DEBUG)   console.log("judge_lib_recomended_from_cache called");;
     for (i = 0; i<booklist.length; i++)
         //return( judge_lib_recomended_with_arg( booklist[i], Setting ));
-        judge_lib_recomended_with_arg( booklist[i], Setting );
+        //judge_lib_recomended_with_arg( booklist[i], Setting );
+        lib_recomended_get_cache( booklist[i], Setting );
     
     dfd_librecom.resolve();
     dfd_flag = 1;
@@ -92,11 +93,12 @@ module.exports.judge_lib_recomended_from_cache = function(){
 ////////////////////////////////////////////////////////
 function lib_recomended_set_cache( Setting ){
     
-    if(DEBUG=1){
+    /*
+    if(DEBUG){
         console.log("judge_lib_recomended call");
         console.log("Setting.age = "+Setting.age);
         console.log("previous_search_age =" +previous_search_age);
-    }
+    }*/
 
     
     //var dfd_librecom = new $.Deferred;
@@ -164,6 +166,7 @@ function judge_lib_recomended_with_arg( BookInfo, Setting ){
         console.log("judge_lib_recomended call");
         console.log("Setting.age = "+Setting.age);
         console.log("previous_search_age =" +previous_search_age);
+        console.log("来ないはず");
     }
 
     
