@@ -127,27 +127,31 @@ var goToDetail = function(obj) {
     var author = obj.getAttribute('author');
     var isbn = obj.getAttribute('isbn');
     var imageUrl = obj.getAttribute('src');
+    var cityLibRecommended = obj.getAttribute('CityLibRecommended');
+    var cityLibComment = obj.getAttribute('CityLibComment');
 
     var html_string = '<div class="book_detail_before"></div>' +
                         '<div class="book_detail">' + 
                             '<table class="book_info">' + 
                                 '<tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>' +
                                 '<tr>' + 
-                                    '<td class="book_big_image" style="background-image:url(' + imageUrl + '); background-size: contain; background-repeat:no-repeat;">' + 
-                                    '<div id="recommend">' +
+                                '<td class="book_big_image" style="background-image:url(' + imageUrl + '); background-size: contain; background-repeat:no-repeat;">';
+    if (cityLibRecommended == 1) {
+        html_string +=              '<div id="recommend">' +
                                         '<a href="#open_recommend"><img src="/images/recommend.png" ></a>' +
                                         '<div id="modal">' +
                                             '<div id="open_recommend">' + 
                                                 '<a href="#" class="close_overlay">×</a>' + 
                                                 '<div class="modal_window">' +
                                                     '<h2>生駒図書館司書おすすめ</h2>' + 
-                                                    '<p>「せんせいやお母さんは、本をいっぱいよみなさいっていうけど・・・」いこまにすんでいる小学校２年生のよみちゃん。夏休みにはいってからもう１週間もたつのに、まだよみたい本が見つかりません。おうちの近くの図書かんに行ってもたくさん本がならんでいるのを見ると、どれにしようかまよってしまいます。さてさて、よみちゃんのよみたい本はいったいどこにかくれているのでしょうか・・・？本を読みたい気持ちはいっぱいあるのに、なかなか本を決められなくて困っているよみちゃんが、すてきな本に出会うおはなしです。</p>' +
+                                                    '<p>' + cityLibComment  + '</p>' +
                                                     '<a href="#"><img src="/images/close.png" ></a>' + 
                                                 '</div><!--/.modal_window-->'+ 
                                             '</div><!--/#open01-->'+
                                         '</div><!--/#modal-->' +
-                                    '</div><!--/#recommend-->' +
-                                    '</td>' + 
+                                    '</div><!--/#recommend-->';
+    }
+    html_string +=              '</td>' + 
                                     '<td>' + 
                                         '<a href="#"><img src="/images/koreyomo.png"></a>' + 
                                     '</td>' + 
@@ -245,7 +249,9 @@ var ajaxRecommendationApi = function() {
                         bookList.append("<p>" + r[i].Title +"<br><div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\"></div></p>");
                     } else if (vs == 'タイル') {
                       var attr = 'src="' + r[i].MidiumImageURL + '" alt="' + r[i].Title + '"';
-                      attr += 'author="' + r[i].Author + '" isbn="' + r[i].Isbn + '"';
+                      attr += ' author="' + r[i].Author + '" isbn="' + r[i].Isbn + '"';
+                      attr += ' CityLibRecommended="' + r[i].CityLibRecommended + '"';
+                      attr += ' CityLibComment="' + r[i].CityLibComment + '"';
                       var html_string ='<a ' + attr + ' onClick="goToDetail(this)">' + 
                                         '<div class="bookbox">' +
                                             '<div style="height:125px;">' +
