@@ -142,12 +142,12 @@ var goToDetail = function(obj) {
     var imageUrl = obj.getAttribute('src');
     var cityLibRecommended = obj.getAttribute('CityLibRecommended');
     var cityLibComment = obj.getAttribute('CityLibComment');
-
     var html_string = '<div class="book_detail_before"></div>' +
                         '<div class="book_detail">' + 
                             '<table class="book_info">' + 
                                 '<tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>' +
                                 '<tr>' + 
+                        '<a onClick="returnToSearchResult()"><img class="back" src="/images/back.png"></a>' +
                                 '<td class="book_big_image" style="background-image:url(' + imageUrl + '); background-size: contain; background-repeat:no-repeat;">';
     if (cityLibRecommended == 1) {
         html_string +=              '<div id="recommend">' +
@@ -180,6 +180,7 @@ var goToDetail = function(obj) {
                                 '<tr>' + 
                                     '<td class="heading_td">蔵書図書館：</td>' + 
                                     '<td>' + 
+                                      '<div id="target_of_calil_result" />'
                                     '</td>' + 
                                 '</tr>' + 
                                 '<tr>' + 
@@ -194,10 +195,10 @@ var goToDetail = function(obj) {
                                 '</tr>' +
                             '</table>' + 
                         '</div>' + 
-                        '<a onClick="returnToSearchResult()"><img class="back" src="/images/back.png"></a>' +
                       '</div>';
 
     main.append(html_string);
+    ajaxCalil(isbn);
 
 /*
 
@@ -456,6 +457,45 @@ var ajaxSearchApi = function() {
             }
            });
 };
+
+var ajaxCalil = function(isbn) {
+    console.log("started ajaxCalil()");
+    var target = $("#target_of_calil_result");
+    target.children().remove();
+    target.append("<img id=\"calling_calil\" src=\"/images/calling_calil.gif\">");
+    var url = "http://api.calil.jp/check?callback=no&appkey=3494d30088f8133e67f0092098fe9aa7&systemid=Nara_Ikoma&format=json&isbn=" + isbn;
+    $.ajax({type: "GET",
+	    url: url,
+	    dataType: 'json',
+            success: function(r) {
+                if (r.continue == 0) {
+		    var a = Object.keys(r.books);
+		    if (a.length == 1) {
+			var ikoma = r.books[a[0]].Nara_Ikoma;
+			var status = ikoma.status;
+			var reserveurl = ikoma.reserveurl;
+			var libkey = ikoma.libkey;
+			console.log(ikoma);
+			if (status == "OK" || status == "Cache") {
+			    target.children().remove();
+			    if (libkey["北分館"] == "貸出可") {	target.append("<img src=\"/images/icon_kita.png\">") }
+			    if (libkey["南分館"] == "貸出可") { target.append("<img src=\"/images/icon_minami.png\">") }
+			    if (libkey["生駒市図書館（本館）"] == "貸出可") { target.append("<img src=\"/images/icon_ikoma.png\">") }
+			    if (libkey["生駒駅前図書室"] == "貸出可") { target.append("<img src=\"/images/icon_eki.png\">") }
+			    if (libkey["鹿ノ台ふれあいホール"] == "貸出可") { target.append("<img src=\"/images/icon_shika.png\">") }
+			}
+		    }
+		}
+	    },
+            error: function(r) {
+		console.log("カーリルAPIの呼び出しが失敗しました: ");
+	    },
+            complete: function(r) {
+		console.log("finished ajaxCalil()");
+	    }
+	   });
+};
+
 
 var onSearch = function() {
     var isRecommendation = localStorage.getItem('optionIsRecommendation');
