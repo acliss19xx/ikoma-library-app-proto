@@ -76,6 +76,7 @@ var goToGenreSelection = function() {
     main.append("<input type=\"button\" value=\"おすすめ\" onClick=\"onSearchRecommendation()\" style=\"width: 90px; height: 90px\">");
     main.append("<input type=\"button\" value=\"どうぶつ\" onClick=\"onSearchGenreAnimal()\" style=\"width: 90px; height: 90px\">");
     main.append("<input type=\"button\" value=\"のりもの\" onClick=\"onSearchGenreVehicle()\" style=\"width: 90px; height: 90px\"><br/>");
+    main.append("<input type=\"button\" value=\"こぐま社\" onClick=\"onSearchPublisherKoguma()\" style=\"width: 90px; height: 90px\"><br/>");
     main.append("<img id=\"mic\" src=\"/images/mic.png\" onClick=\"onSearchBySpeech()\" style=\"width: 90px; height: 90px\">");
 };
 
@@ -532,6 +533,15 @@ var onSearchGenreAnimal = function() {
 
 var onSearchGenreVehicle = function() {
     onSearchTitle('のりもの');
+};
+
+var onSearchPublisherKoguma = function() {
+    clearChildren();
+    localStorage.setItem('optionIsRecommendation', 'OFF');
+    localStorage.setItem('optionTitle', '');
+    localStorage.setItem('optionAuthor', '');
+    localStorage.setItem('optionPublisherName', 'こぐま社');
+    ajaxSearchApi();
 };
 
 var setViewStyle = function(s) {
