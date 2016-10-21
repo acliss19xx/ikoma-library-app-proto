@@ -463,7 +463,7 @@ var ajaxCalil = function(isbn) {
     var target = $("#target_of_calil_result");
     target.children().remove();
     target.append("<img id=\"calling_calil\" src=\"/images/calling_calil.gif\">");
-    var url = "http://api.calil.jp/check?callback=no&appkey=3494d30088f8133e67f0092098fe9aa7&systemid=Nara_Ikoma&format=json&isbn=" + isbn;
+    var url = "https://api.calil.jp/check?callback=no&appkey=3494d30088f8133e67f0092098fe9aa7&systemid=Nara_Ikoma&format=json&isbn=" + isbn;
     $.ajax({type: "GET",
 	    url: url,
 	    dataType: 'json',
