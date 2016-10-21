@@ -180,8 +180,6 @@ var goToDetail = function(obj) {
                                 '<tr>' + 
                                     '<td class="heading_td">蔵書図書館：</td>' + 
                                     '<td>' + 
-                                        '<img src="/images/icon_eki_on.png"><img src="/images/icon_ikoma_on.png">' + 
-                                        '<img src="/images/icon_kita_off.png">' + 
                                     '</td>' + 
                                 '</tr>' + 
                                 '<tr>' + 
@@ -390,9 +388,6 @@ var ajaxSearchApi = function() {
                                                 '</div>' +
                                                 '<div class="book_title">' + obj.Items[i].title + '</div>' +
                                                 '<div class="lib_icon">' +
-                                                    '<img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">' +
-                                                    '<img src="/images/icon_kita.png"><img src="/images/icon_minami.png">' +
-                                                    '<img src="/images/icon_shika.png"><img src="/images/icon_recommend.png">' +
                                                 '</div>' +
                                             '</div>' +
                                         '</a>';
@@ -422,9 +417,6 @@ var ajaxSearchApi = function() {
                                     '<td class="heading_td">蔵書図書館：</td>' + 
                                     '<td>' + 
                                             '<div class="lib_icon">' +
-                                                '<img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">' +
-                                                '<img src="/images/icon_kita.png"><img src="/images/icon_minami.png">' +
-                                                '<img src="/images/icon_shika.png"><img src="/images/icon_recommend.png">' +
                                             '</div>' +
                                     '</td>' + 
                                 '</tr>' + 
