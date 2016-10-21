@@ -4,6 +4,7 @@ var clearChildren = function() {
     main.text('');
     main.children().remove();
     result.children().remove();
+    result.show();
 };
 
 var createInitialSetLibraries = function() {
