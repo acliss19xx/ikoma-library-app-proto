@@ -486,8 +486,6 @@ var ajaxCalil = function(isbn) {
 			    if (libkey["鹿ノ台ふれあいホール"] == "貸出可") { target.append("<img src=\"/images/icon_shika.png\">") }
 			}
 		    }
-		} else {
-		    setTimeout(ajaxCalil, 2000);
 		}
 	    },
             error: function(r) {
