@@ -459,12 +459,17 @@ var ajaxSearchApi = function() {
            });
 };
 
+gCurrentISBN = 0;
+gSession = 0;
+
 var ajaxCalil = function(isbn) {
-    console.log("started ajaxCalil()");
+    gCurrentISBN = isbn;
     var target = $("#target_of_calil_result");
     target.children().remove();
     target.append("<img id=\"calling_calil\" src=\"/images/calling_calil.gif\">");
-    var url = "https://api.calil.jp/check?callback=no&appkey=3494d30088f8133e67f0092098fe9aa7&systemid=Nara_Ikoma&format=json&isbn=" + isbn;
+    var url = "https://api.calil.jp/check?";
+    if (gSession != 0) url += "session=" + gSession + "&";
+    url += "callback=no&appkey=3494d30088f8133e67f0092098fe9aa7&systemid=Nara_Ikoma&format=json&isbn=" + gCurrentISBN;
     $.ajax({type: "GET",
 	    url: url,
 	    dataType: 'json',
@@ -476,7 +481,6 @@ var ajaxCalil = function(isbn) {
 			var status = ikoma.status;
 			var reserveurl = ikoma.reserveurl;
 			var libkey = ikoma.libkey;
-			console.log(ikoma);
 			if (status == "OK" || status == "Cache") {
 			    target.children().remove();
 			    if (libkey["北分館"] == "貸出可") {	target.append("<img src=\"/images/icon_kita.png\">") }
@@ -484,15 +488,18 @@ var ajaxCalil = function(isbn) {
 			    if (libkey["生駒市図書館（本館）"] == "貸出可") { target.append("<img src=\"/images/icon_ikoma.png\">") }
 			    if (libkey["生駒駅前図書室"] == "貸出可") { target.append("<img src=\"/images/icon_eki.png\">") }
 			    if (libkey["鹿ノ台ふれあいホール"] == "貸出可") { target.append("<img src=\"/images/icon_shika.png\">") }
+			    gSession = 0;
 			}
 		    }
+		} else if (r.continue == 1) {
+		    gSession = r.session;
+		    setTimeout(ajaxCalil, 2100);
 		}
 	    },
             error: function(r) {
 		console.log("カーリルAPIの呼び出しが失敗しました: ");
 	    },
             complete: function(r) {
-		console.log("finished ajaxCalil()");
 	    }
 	   });
 };
