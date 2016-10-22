@@ -143,12 +143,12 @@ var goToDetail = function(obj) {
     var imageUrl = obj.getAttribute('src');
     var cityLibRecommended = obj.getAttribute('CityLibRecommended');
     var cityLibComment = obj.getAttribute('CityLibComment');
+
     var html_string = '<div class="book_detail_before"></div>' +
                         '<div class="book_detail">' + 
                             '<table class="book_info">' + 
                                 '<tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>' +
                                 '<tr>' + 
-                        '<a onClick="returnToSearchResult()"><img class="back" src="/images/back.png"></a>' +
                                 '<td class="book_big_image" style="background-image:url(' + imageUrl + '); background-size: contain; background-repeat:no-repeat;">';
     if (cityLibRecommended == 1) {
         html_string +=              '<div id="recommend">' +
@@ -180,8 +180,7 @@ var goToDetail = function(obj) {
                                 '</tr>' + 
                                 '<tr>' + 
                                     '<td class="heading_td">蔵書図書館：</td>' + 
-                                    '<td>' + 
-                                      '<div id="target_of_calil_result" />'
+                                    '<td id="target_of_calil_result">' +
                                     '</td>' + 
                                 '</tr>' + 
                                 '<tr>' + 
@@ -196,6 +195,7 @@ var goToDetail = function(obj) {
                                 '</tr>' +
                             '</table>' + 
                         '</div>' + 
+                        '<a onClick="returnToSearchResult()"><img class="back" src="/images/back.png"></a>' +
                       '</div>';
 
     main.append(html_string);
