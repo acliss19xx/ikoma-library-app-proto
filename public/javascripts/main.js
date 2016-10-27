@@ -56,12 +56,25 @@ var onSetAge = function() {
     var age_3_6 = $('#age_3-6').attr('checked');
     var age_7_10 = $('#age_7-10').attr('checked');
     var age_11_13 = $('#age_11-13').attr('checked');
-    if (age_0_2 == 'checked') { localStorage.setItem('age', '0-2'); }
-    if (age_3_6 == 'checked') { localStorage.setItem('age', '3-6'); }
-    if (age_7_10 == 'checked') { localStorage.setItem('age', '7-10'); }
-    if (age_11_13 == 'checked') { localStorage.setItem('age', '11-13'); }
+    if (age_0_2 == 'checked') { localStorage.setItem('age', '1'); }
+    if (age_3_6 == 'checked') { localStorage.setItem('age', '2'); }
+    if (age_7_10 == 'checked') { localStorage.setItem('age', '3'); }
+    if (age_11_13 == 'checked') { localStorage.setItem('age', '4'); }
     localStorage.setItem('initialized', 'true');
     goToGenreSelection();
+};
+
+var setOptionAge = function(age) {
+    localStorage.setItem('age', age);
+    var s = '';
+    switch (age) {
+    case '1': s = '0～2歳'; break;
+    case '2': s = '3～6歳'; break;
+    case '3': s = '7～10歳'; break;
+    case '4': s = '11～13歳'; break;
+    default: break;
+    }
+    $("#optionAge").text('対象年齢:' + s);
 };
 
 var setSearchOptions = function() {
@@ -98,6 +111,7 @@ var returnToSearchResult = function() {
 var createSearchOptions = function() {
     var main = $("#main");
     var isRecommendation = localStorage.getItem('optionIsRecommendation');
+    var age = localStorage.getItem('age');
     var libraries = localStorage.getItem('optionLibraries');
     if (libraries == null) libraries = '本館';
     var title = localStorage.getItem('optionTitle');
@@ -107,6 +121,7 @@ var createSearchOptions = function() {
     var publisherName = localStorage.getItem('optionPublisherName');
     if (publisherName == null) publisherName = '';
     main.append("<p><div class=\"dropdown\"><button id=\"optionIsRecommendation\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li>	<a href=\"#\" onClick=\"setOptionIsRecommendation('ON')\">ON</a></li><li><a href=\"#\" onClick=\"setOptionIsRecommendation('OFF')\">OFF</a></li></ul></div></p>");
+    main.append("<p><div class=\"dropdown\"><button id=\"optionAge\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionAge('1')\">0～2歳</a></li><li><a href=\"#\" onClick=\"setOptionAge('2')\">3～6歳</a></li><li><a href=\"#\" onClick=\"setOptionAge('3')\">7～10歳</a></li><li><a href=\"#\" onClick=\"setOptionAge('4')\">11～13歳</a></li></ul></div></p>");
     main.append("<p><div class=\"dropdown\"><button id=\"optionLibraries\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionLibraries('本館')\">本館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('駅前')\">駅前</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('北館')\">北館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('南館')\">南館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('鹿ノ台')\">鹿ノ台</a></li></ul></div></p>");
     main.append("<p><input type=\"text\" id=\"optionTitle\" class=\"form-control\" placeholder=\"書名\" value=\"" + title + "\"></p>");
     main.append("<p><input type=\"text\" id=\"optionAuthor\" class=\"form-control\" placeholder=\"著者名\" value=\"" + author + "\"></p>");
@@ -114,6 +129,7 @@ var createSearchOptions = function() {
     main.append("<p><input type=\"button\" class=\"btn btn-success\" id=\"goToSearch\" value=\"決定\" onClick=\"setSearchOptions(); goToSearch()\">");
     setOptionLibraries(libraries);
     setOptionIsRecommendation(isRecommendation);
+    setOptionAge(age);
 };
 
 var onSearchOptions = function() {
@@ -242,7 +258,9 @@ var getHtmlRecommended = function(rcmd) {
 
 var ajaxRecommendationApi = function() {
     var vs = localStorage.getItem('viewStyle');
-    var url = (location.hostname == "localhost") ? "http://localhost:3000/api/recommendation" : "https://" + location.hostname + "/api/recommendation";
+    var age = localStorage.getItem('age');
+    var q = 'age=' + age;
+    var url = (location.hostname == "localhost") ? "http://localhost:3000/api/recommendation?" + q : "https://" + location.hostname + "/api/recommendation?" + q;
     $("#loading").html("<img src=\"/images/loading.gif\" />");
     $.ajax({type: "GET",
             url: url,

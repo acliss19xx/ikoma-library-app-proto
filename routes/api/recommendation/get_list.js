@@ -24,7 +24,7 @@ var RakutenServerConnection = require('./RakutenServerConnection.js');
 var CalilServerConnection = require('./CalilServerConnection.js');
 var LibRecomend = require('./LibRecomend.js');
 var SchoolRecomend = require('./SchoolRecomend.js');
-
+var querystring = require('querystring');
 
 ////// テスト用
 //document.write( "<script type='text/javascript' src='./sync_test/log1.js'></script>" );
@@ -205,11 +205,13 @@ global.SelectBooks = new sessionSetting();
 // 
 // 戻り値：BookInfoオブジェクトのリスト（最大BOOK_LIST_NUM件分）
 //////////////////////////////////////////////////////////////////////
-module.exports.get_booklist = function(res){
+module.exports.get_booklist = function(req, res){
 //function get_booklist( Setting, page ){	//node.jsの時にはコメントアウト(上記を有効化)
     
 	console.log("start get_booklist");
+    var params = querystring.parse(req._parsedUrl.query);
     init_booklist();
+    Setting.age = params['age'];
 /*
     var a = ["12-3", "12+3", "12;", "12 3", "-12", "+123", " 123"];
     //var b = parseInt(a, 10);
