@@ -9,6 +9,13 @@ var useLibraries ={
     useLibShika:{name:'鹿ノ台',iconName:'しか',iconColor:'#888888'}
 };
 
+var bookGeneration ={
+    1:{name:'０～２歳'},
+    2:{name:'３～６歳'},
+    3:{name:'７～１０歳'},
+    4:{name:'１１～１３歳'},
+};
+
 var clearChildren = function() {
     var main = $("#main");
     var result = $("#result");
@@ -41,28 +48,15 @@ var onSetLibraries = function() {
 };
 
 var createInitialSetAge = function() {
-    var main = $("#main");
     clearChildren();
-    main.append("<p><div class=\"alert alert-info\" role=\"alert\">対象年齢は？</div>");
-    main.append("<div class=\"btn-group-vertical\" role=\"group\" aria-label=\"age\">");
-    main.append("<input type=\"radio\" name=\"age\" id=\"age_0-2\" checked>0～2歳</br>");
-    main.append("<input type=\"radio\" name=\"age\" id=\"age_3-6\">3～6歳</br>");
-    main.append("<input type=\"radio\" name=\"age\" id=\"age_7-10\">7～10歳</br>");
-    main.append("<input type=\"radio\" name=\"age\" id=\"age_11-13\">11～13歳</br>");
-    main.append("</div></p>");
-    main.append("<button type=\"button\" class=\"btn btn-warning\" onClick=\"createInitialSetLibraries()\">戻る</button>");
-    main.append("<button type=\"button\" class=\"btn btn-success\" onClick=\"onSetAge()\">次へ</button>");
+    var source = $("#createInitialSetAge").html();
+    var template = Handlebars.compile(source);
+    var html = template(bookGeneration);
+    $("#main").append(html);
 };
 
 var onSetAge = function() {
-    var age_0_2 = $('#age_0-2').attr('checked');
-    var age_3_6 = $('#age_3-6').attr('checked');
-    var age_7_10 = $('#age_7-10').attr('checked');
-    var age_11_13 = $('#age_11-13').attr('checked');
-    if (age_0_2 == 'checked') { localStorage.setItem('age', '1'); }
-    if (age_3_6 == 'checked') { localStorage.setItem('age', '2'); }
-    if (age_7_10 == 'checked') { localStorage.setItem('age', '3'); }
-    if (age_11_13 == 'checked') { localStorage.setItem('age', '4'); }
+    localStorage.setItem('age', $('input[name="age"]:checked').val());
     localStorage.setItem('initialized', 'true');
     goToGenreSelection();
 };

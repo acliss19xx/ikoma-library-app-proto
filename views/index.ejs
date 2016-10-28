@@ -85,5 +85,18 @@
         </p>
         <button type="button" class="btn btn-success" onClick="onSetLibraries()">次へ</button>
     </script>
+
+    <script type="text/x-handlebars-template" id="createInitialSetAge">
+        <p>
+            <div class="alert alert-info" role="alert">対象年齢は？</div>
+            <div class="btn-group-vertical" role="group" aria-label="age">
+            {{#each this}}
+                    <input type="radio" name="age" value="{{@key}}" >{{this.name}}</br>
+                {{/each}}
+            </div>
+        </p>
+        <button type="button" class="btn btn-warning" onClick="createInitialSetLibraries()">戻る</button>
+        <button type="button" class="btn btn-success" onClick="onSetAge()">次へ</button>
+    </script>
 </body>
 </html>
