@@ -1,6 +1,14 @@
 window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
 var gSpeechRecognition = new webkitSpeechRecognition();
 
+var useLibraries ={
+    useLibHonkan:{name:'本館',iconName:'いこま',iconColor:'#888888'},
+    useLibEkimae:{name:'駅前',iconName:'えき',iconColor:'#888888'},
+    useLibKita:{name:'北館',iconName:'きた',iconColor:'#888888'},
+    useLibMinami:{name:'南館',iconName:'みなみ',iconColor:'#888888'},
+    useLibShika:{name:'鹿ノ台',iconName:'しか',iconColor:'#888888'}
+};
+
 var clearChildren = function() {
     var main = $("#main");
     var result = $("#result");
@@ -11,16 +19,11 @@ var clearChildren = function() {
 };
 
 var createInitialSetLibraries = function() {
-    var main = $("#main");
     clearChildren();
-    main.append("<p><div class=\"alert alert-info\" role=\"alert\">よく使う図書館は？</div>");
-    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibHonkan\">本館</label></div>");
-    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibEkimae\">駅前</label></div>");
-    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibKita\">北館</label></div>");
-    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibMinami\">南館</label></div>");
-    main.append("<div class=\"checkbox\"><label><input type=\"checkbox\" id=\"useLibShika\">鹿ノ台</label></div>");
-    main.append("</p>");
-    main.append("<button type=\"button\" class=\"btn btn-success\" onClick=\"onSetLibraries()\">次へ</button>");
+    var source = $("#createInitialSetLibraries").html();
+    var template = Handlebars.compile(source);
+    var html = template(useLibraries);
+    $("#main").append(html);
 };
 
 var onSetLibraries = function() {

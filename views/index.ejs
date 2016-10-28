@@ -76,6 +76,14 @@
      
  
     </div>
-
+    <script type="text/x-handlebars-template" id="createInitialSetLibraries">
+        <p>
+            <div class="alert alert-info" role="alert">よく使う図書館は？</div>
+            {{#each this}}
+                <div class="checkbox"><label><input type="checkbox" id="{{@key}}">{{this.name}}</label></div>
+            {{/each}}
+        </p>
+        <button type="button" class="btn btn-success" onClick="onSetLibraries()">次へ</button>
+    </script>
 </body>
 </html>
