@@ -98,5 +98,46 @@
         <button type="button" class="btn btn-warning" onClick="createInitialSetLibraries()">戻る</button>
         <button type="button" class="btn btn-success" onClick="onSetAge()">次へ</button>
     </script>
+
+    <script type="text/x-handlebars-template" id="createSearchOptions">
+      <p>
+        <div class="dropdown">
+          <button id="optionIsRecommendation" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="#" onClick="setOptionIsRecommendation('ON')">ON</a></li>
+            <li><a href="#" onClick="setOptionIsRecommendation('OFF')">OFF</a></li>
+          </ul>
+        </div>
+      </p>
+      <p>
+        <div class="dropdown">
+          <button id="optionLibraries" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              {{#each this.useLibraries}}
+                <li><a href="#" onClick="setOptionLibraries('{{@key}}')">{{this.name}}</a></li>
+              {{/each}}
+          </ul>
+        </div>
+      </p>
+      <p><input type="text" id="optionTitle" class="form-control" placeholder="書名" value="{{title}}"></p>
+      <p><input type="text" id="optionAuthor" class="form-control" placeholder="著者名" value="{{author}}"></p>
+      <p><input type="text" id="optionPublisherName" class="form-control" placeholder="出版社" value="{{publisherName}}"></p>
+      <p><input type="button" class="btn btn-success" id="goToSearch" value="決定" onClick="setSearchOptions(); goToSearch()">
+    </script>
+
+    <script type="text/x-handlebars-template" id="goToSettings">
+      <p><input type="button" class="btn btn-default" id="BtnSearchOptions" value="検索条件" onClick="onSearchOptions()"></p>
+      <p><div class="dropdown">
+        <button id="viewStyle" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          {{#each this}}
+            <li><a href="#" onClick="setViewStyle('{{@key}}')">{{this.name}}</a></li>
+          {{/each}}
+        </ul>
+      </div></p>
+      <p><input type="button" class="btn btn-default" id="useFromMultiDevice" value="マルチデバイスでの使用" onClick=""></p>
+    </script>
+
+
 </body>
 </html>

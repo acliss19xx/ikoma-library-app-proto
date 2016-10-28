@@ -117,13 +117,18 @@ var createSearchOptions = function() {
     if (author == null)  author = '';
     var publisherName = localStorage.getItem('optionPublisherName');
     if (publisherName == null) publisherName = '';
-    main.append("<p><div class=\"dropdown\"><button id=\"optionIsRecommendation\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li>	<a href=\"#\" onClick=\"setOptionIsRecommendation('ON')\">ON</a></li><li><a href=\"#\" onClick=\"setOptionIsRecommendation('OFF')\">OFF</a></li></ul></div></p>");
-    main.append("<p><div class=\"dropdown\"><button id=\"optionAge\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionAge('1')\">0～2歳</a></li><li><a href=\"#\" onClick=\"setOptionAge('2')\">3～6歳</a></li><li><a href=\"#\" onClick=\"setOptionAge('3')\">7～10歳</a></li><li><a href=\"#\" onClick=\"setOptionAge('4')\">11～13歳</a></li></ul></div></p>");
-    main.append("<p><div class=\"dropdown\"><button id=\"optionLibraries\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setOptionLibraries('本館')\">本館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('駅前')\">駅前</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('北館')\">北館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('南館')\">南館</a></li><li><a href=\"#\" onClick=\"setOptionLibraries('鹿ノ台')\">鹿ノ台</a></li></ul></div></p>");
-    main.append("<p><input type=\"text\" id=\"optionTitle\" class=\"form-control\" placeholder=\"書名\" value=\"" + title + "\"></p>");
-    main.append("<p><input type=\"text\" id=\"optionAuthor\" class=\"form-control\" placeholder=\"著者名\" value=\"" + author + "\"></p>");
-    main.append("<p><input type=\"text\" id=\"optionPublisherName\" class=\"form-control\" placeholder=\"出版社\" value=\"" + publisherName + "\"></p>");
-    main.append("<p><input type=\"button\" class=\"btn btn-success\" id=\"goToSearch\" value=\"決定\" onClick=\"setSearchOptions(); goToSearch()\">");
+    var value = {
+        title: title,
+        author: author,
+        publisherName: publisherName,
+        bookGeneration: bookGeneration,
+        useLibraries: useLibraries,
+    }
+
+    var source = $("#createSearchOptions").html();
+    var template = Handlebars.compile(source);
+    var html = template(value);
+    $("#main").append(html);
     setOptionLibraries(libraries);
     setOptionIsRecommendation(isRecommendation);
     setOptionAge(age);
@@ -591,7 +596,7 @@ var setOptionIsRecommendation = function(s) {
 
 var setOptionLibraries = function(s) {
     localStorage.setItem('optionLibraries', s);
-    $("#optionLibraries").text('借りる図書館:' + s);
+    $("#optionLibraries").text('借りる図書館:' + useLibraries[s].name);
     $("#optionLibraries").append('<span class="caret">')
 };
 
