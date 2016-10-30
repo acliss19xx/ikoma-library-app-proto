@@ -1,6 +1,21 @@
 window.SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
 var gSpeechRecognition = new webkitSpeechRecognition();
 
+var viewStyle ={
+    normal:{
+        name:'ノーマル',
+        template: 'book-list-normal'
+    },
+    carousel:{
+        name:'カルーセル',
+        template: 'book-list-carousel'
+    },
+    horizontal_scroll:{
+        name:'横スクロール',
+        template: 'book-list-horizontal-scroll'
+    },
+};
+
 var useLibraries ={
     useLibHonkan:{name:'本館',iconName:'いこま',iconColor:'#888888'},
     useLibEkimae:{name:'駅前',iconName:'えき',iconColor:'#888888'},
@@ -63,15 +78,9 @@ var onSetAge = function() {
 
 var setOptionAge = function(age) {
     localStorage.setItem('age', age);
-    var s = '';
-    switch (age) {
-    case '1': s = '0～2歳'; break;
-    case '2': s = '3～6歳'; break;
-    case '3': s = '7～10歳'; break;
-    case '4': s = '11～13歳'; break;
-    default: break;
+    if(age != "null"){
+        $("#optionAge").text('対象年齢:' + bookGeneration[age].name);
     }
-    $("#optionAge").text('対象年齢:' + s);
 };
 
 var setSearchOptions = function() {
@@ -110,7 +119,7 @@ var createSearchOptions = function() {
     var isRecommendation = localStorage.getItem('optionIsRecommendation');
     var age = localStorage.getItem('age');
     var libraries = localStorage.getItem('optionLibraries');
-    if (libraries == null) libraries = '本館';
+    if (libraries == null) libraries = 'useLibHonkan';
     var title = localStorage.getItem('optionTitle');
     if (title == null) title = '';
     var author = localStorage.getItem('optionAuthor');
@@ -143,11 +152,12 @@ var onSearchOptions = function() {
 
 var goToSettings = function() {
     clearChildren();
-    var main = $("#main");
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"BtnSearchOptions\" value=\"検索条件\" onClick=\"onSearchOptions()\"></p>");
-    main.append("<p><div class=\"dropdown\"><button id=\"viewStyle\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\"></span></button><ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\"><li><a href=\"#\" onClick=\"setViewStyle('ノーマル')\">ノーマル</a></li><li><a href=\"#\" onClick=\"setViewStyle('タイル')\">タイル</a></li><li><a href=\"#\" onClick=\"setViewStyle('カルーセル')\">カルーセル</a></li></ul></div></p>");
+    clearChildren();
+    var source = $("#goToSettings").html();
+    var template = Handlebars.compile(source);
+    var html = template(viewStyle);
+    $("#main").append(html);
     setViewStyle(localStorage.getItem('viewStyle'));
-    main.append("<p><input type=\"button\" class=\"btn btn-default\" id=\"useFromMultiDevice\" value=\"マルチデバイスでの使用\" onClick=\"\"></p>");
     $('.hamburger.is-open').click();
 };
 
@@ -218,18 +228,6 @@ var goToDetail = function(obj) {
 
     main.append(html_string);
     ajaxCalil(isbn);
-
-/*
-
-    main.append("<p><input type=\"image\" src=\"/images/back.png\" id=\"BtnReturn\" onClick=\"goToSearch()\"></p>");
-    main.append("<img src=\"" + imageUrl + "\" alt=\"" + title + "\" align=\"top\">");
-    main.append("<input type=\"image\" src=\"/images/koreyomo.png\" width=\"50%\" height=\"50%\">");
-    main.append("<ul class=\"list-group\">");
-    main.append("  <li class=\"list-group-item\">タイトル: " + title + "</li>");
-    main.append("  <li class=\"list-group-item\">著者: " + author + "</li>");
-    main.append("  <li class=\"list-group-item\">ISBN: " + isbn + "</li>");
-    main.append("</ul>");
-*/
 };
 
 var getHtmlRentaledIcons = function(info) {
@@ -268,88 +266,20 @@ var ajaxRecommendationApi = function() {
             url: url,
             dataType: 'json',
             success: function(r) {
-                var result = $("#result");
-                result.children().remove();
-                result.append('<div class="padding_box"></div>');
-                result.append('<div class="inner_container"></div>');
-                var inner_container = $('.inner_container');
-                inner_container.append("<div class=\"book-list\"></div>");
-                var bookList = $(".book-list");
                 var len = r.length;
-
-                for (var i = 0; i < len; i++) {
-                    if (vs == 'ノーマル') {
-                        bookList.append("<p>" + r[i].Title +"<br><div class=\"book\"><img src=\"" + r[i].MidiumImageURL + "\"></div></p>");
-                    } else if (vs == 'タイル') {
-                      var attr = 'src="' + r[i].MidiumImageURL + '" alt="' + r[i].Title + '"';
-                      attr += ' author="' + r[i].Author + '" isbn="' + r[i].Isbn + '"';
-                      attr += ' CityLibRecommended="' + r[i].CityLibRecommended + '"';
-                      attr += ' CityLibComment="' + r[i].CityLibComment + '"';
-                      var html_string ='<a ' + attr + ' onClick="goToDetail(this)">' + 
-                                        '<div class="bookbox">' +
-                                            '<div style="height:125px;">' +
-                                                '<img src="' + r[i].MidiumImageURL +'" height="120px">' +
-                                            '</div>' +
-                                            '<div class="book_title">' + r[i].Title + '</div>' +
-                                            '<div class="lib_icon">' +
-			                        getHtmlRentaledIcons(r[i].CityLibRentaledInfo) + 
-                                                getHtmlRecommended(r[i].CityLibRecommended) +
-                                            '</div>' +
-                                        '</div>' +
-                                    '</a>';
-
-                      bookList.append(html_string);
-
-                    } else if (vs == 'カルーセル') {
-
-    var html_string = '<div><div class="book_detail_before"></div>' +
-                        '<div class="book_detail">' + 
-                            '<table class="book_info">' + 
-                                '<tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>' +
-                                '<tr>' + 
-                                    '<td class="book_big_image" style="background-image:url(' + r[i].MidiumImageURL + '); background-size: contain; background-repeat:no-repeat;">' + 
-                                    '</td>' + 
-                                    '<td>' + 
-                                        '<a href="#"><img src="/images/koreyomo.png"></a>' + 
-                                    '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td class="heading_td">タイトル：</td>' + 
-                                    '<td colspan="2">'+ r[i].Title + '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td class="heading_td">作：</td>' + 
-                                    '<td>' + r[i].Author + '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td class="heading_td">蔵書図書館：</td>' + 
-                                    '<td>' + 
-                                            '<div class="lib_icon">' +
-                                                '<img src="/images/icon_eki.png"><img src="/images/icon_ikoma.png">' +
-                                                '<img src="/images/icon_kita.png"><img src="/images/icon_minami.png">' +
-                                                '<img src="/images/icon_shika.png"><img src="/images/icon_recommend.png">' +
-                                            '</div>' +
-                                    '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td></td>' + 
-                                    '<td>' +
-                                        '<a href="#"><input type="button" value="この本を買う" onclick=""></a>' +
-                                        '<div class="rakuten"><!-- Rakuten Web Services Attribution Snippet FROM HERE -->' +
-                                            '<a href="http://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>' +
-                                            '<!-- Rakuten Web Services Attribution Snippet TO HERE -->' +
-                                        '</div>' +
-                                    '</td>' + 
-                                '</tr>' +
-                            '</table>' + 
-                       '</div>' + 
-                      '</div></div>';
-
-                      bookList.append(html_string);
-                    }
+                for(i = 0; i < len ; i++){
+                    r[i].HtmlRentaledIconsHtml = getHtmlRentaledIcons(r[i].CityLibRentaledInfo);
+                    r[i].HtmlRecommendedHtml = getHtmlRecommended(r[i].CityLibRecommended);
                 }
+                $("#result").children().remove();
+                $("#result").append('<div class="padding_box"></div><div class="inner_container"><div class="book-list"></div></div>');
 
-                if (localStorage.getItem('viewStyle') == 'カルーセル') {
+                var source = $("#" + viewStyle[vs].template).html();
+                var template = Handlebars.compile(source);
+                var html = template(r);
+                $(".book-list").append(html);
+
+                if (localStorage.getItem('viewStyle') == 'carousel') {
                     $('.book-list').slick({
                         dots: true,
                         speed: 100,
@@ -392,74 +322,23 @@ var ajaxSearchApi = function() {
                     alert('一致する書籍はありませんでした');
                 } else {
                     var obj = JSON.parse(r);
-                    var result = $("#result");
-                    result.children().remove();
-                    result.append('<div class="book-list"></div>');
-                    var bookList = $(".book-list");
-                    var len = obj.Items.length;
-                    for (var i = 0; i < len; i++) {
-                        if (vs == 'ノーマル') {
-                          bookList.append("<p>" + obj.Items[i].title +"<br><div class=\"book\"><img src=\"" + obj.Items[i].mediumImageUrl + "\"></div></p>");
-                        } else if (vs == 'タイル') {
-                          var attr = 'src="' + obj.Items[i].mediumImageUrl + '" alt="' + obj.Items[i].title + '"';
-                          attr += 'author="' + obj.Items[i].author + '" isbn="' + obj.Items[i].isbn + '"';
-                          var html_string ='<a ' + attr + ' onClick="goToDetail(this)">' + 
-                                            '<div class="bookbox">' +
-                                                '<div style="height:125px;">' +
-                                                    '<img src="' + obj.Items[i].mediumImageUrl +'" height="120px">' +
-                                                '</div>' +
-                                                '<div class="book_title">' + obj.Items[i].title + '</div>' +
-                                                '<div class="lib_icon">' +
-                                                '</div>' +
-                                            '</div>' +
-                                        '</a>';
-    
-                      bookList.append(html_string);
-                        } else if (vs == 'カルーセル') {
-    var html_string = '<div><div class="book_detail_before"></div>' +
-                        '<div class="book_detail">' + 
-                            '<table class="book_info">' + 
-                                '<tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>' +
-                                '<tr>' + 
-                                    '<td class="book_big_image" style="background-image:url(' + obj.Items[i].mediumImageUrl + '); background-size: contain; background-repeat:no-repeat;">' + 
-                                    '</td>' + 
-                                    '<td>' + 
-                                        '<a href="#"><img src="/images/koreyomo.png"></a>' + 
-                                    '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td class="heading_td">タイトル：</td>' + 
-                                    '<td colspan="2">'+ obj.Items[i].title + '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td class="heading_td">作：</td>' + 
-                                    '<td>' + obj.Items[i].author + '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td class="heading_td">蔵書図書館：</td>' + 
-                                    '<td>' + 
-                                            '<div class="lib_icon">' +
-                                            '</div>' +
-                                    '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td></td>' + 
-                                    '<td>' +
-                                        '<a href="#"><input type="button" value="この本を買う" onclick=""></a>' +
-                                        '<div class="rakuten"><!-- Rakuten Web Services Attribution Snippet FROM HERE -->' +
-                                            '<a href="http://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>' +
-                                            '<!-- Rakuten Web Services Attribution Snippet TO HERE -->' +
-                                        '</div>' +
-                                    '</td>' + 
-                                '</tr>' +
-                            '</table>' + 
-                        '</div>' + 
-                      '</div></div>';
-    
-                          bookList.append(html_string);
-                        }
+                    var items = obj.Items;
+/*
+                    var len = items.length;
+                    for(i = 0; i < len ; i++){
+                        items[i].HtmlRentaledIconsHtml = getHtmlRentaledIcons(items[i].CityLibRentaledInfo);
+                        items[i].HtmlRecommendedHtml = getHtmlRecommended(items[i].CityLibRecommended);
                     }
-                    if (localStorage.getItem('viewStyle') == 'カルーセル') {
+*/
+                    $("#result").children().remove();
+                    $("#result").append('<div class="padding_box"></div><div class="inner_container"><div class="book-list"></div></div>');
+    
+                    var source = $("#" + viewStyle[vs].template).html();
+                    var template = Handlebars.compile(source);
+                    var html = template(items);
+                    $(".book-list").append(html);
+    
+                    if (localStorage.getItem('viewStyle') == 'carousel') {
                         $('.book-list').slick({
                             dots: true,
                             speed: 100,
@@ -468,6 +347,8 @@ var ajaxSearchApi = function() {
                             autoplay: false,
                         });
                     }
+
+
                 }
             },
             error: function(r) {
@@ -573,7 +454,7 @@ var onSearchPublisherKoguma = function() {
 
 var setViewStyle = function(s) {
     localStorage.setItem('viewStyle', s);
-    $("#viewStyle").text('表示形式:' + s);
+    $("#viewStyle").text('表示形式:' + viewStyle[s].name);
     $("#viewStyle").append('<span class="caret">')
 };
 
@@ -617,7 +498,7 @@ $(function() {
     var isRecommendation = localStorage.getItem('optionIsRecommendation');
     if (isRecommendation == null) { localStorage.setItem('optionIsRecommendation', 'ON'); }
     var vs = localStorage.getItem('viewStyle');
-    if (vs == null) { localStorage.setItem('viewStyle', 'タイル'); }
+    if (vs == null) { localStorage.setItem('viewStyle', Object.keys(viewStyle)[0]); }
     var publisherName = localStorage.getItem('optionPublisherName');
     if (publisherName == null) { localStorage.setItem('optionPublisherName', 'こぐま社'); }
     var initialized = localStorage.getItem('initialized');

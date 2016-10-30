@@ -138,6 +138,78 @@
       <p><input type="button" class="btn btn-default" id="useFromMultiDevice" value="マルチデバイスでの使用" onClick=""></p>
     </script>
 
+<!-- 一覧表示 -->
+    <script type="text/x-handlebars-template" id="book-list-normal">
+      {{#each this}}
+        <a src="{{MediumImageURL}}" alt="{{Title}}" author="{{Author}}" isbn="{{Isbn}}" onClick="goToDetail(this)">
+          <p>{{Title}}<br><div class="book"><img src="{{MediumImageURL}}"></div></p>
+        </a>
+      {{/each}}
+    </script>
 
+<!-- 横スクロール -->
+    <script type="text/x-handlebars-template" id="book-list-horizontal-scroll">
+      {{#each this}}
+          <a src="{{MediumImageURL}}" alt="{{Title}}" author="{{Author}}" isbn="{{Isbn}}"
+            CityLibRecommended="{{CityLibRecommended}}" CityLibComment="{{CityLibComment}}" onClick="goToDetail(this)"> 
+            <div class="bookbox">
+              <div style="height:125px;">
+                <img src="{{MediumImageURL}}" height="120px">
+              </div>
+              <div class="book_title">{{Title}}</div>
+              <div class="lib_icon">
+                {{{HtmlRentaledIconsHtml}}}
+                {{{HtmlRecommendedHtml}}}
+              </div>
+            </div>
+          </a>
+        {{/each}}
+      </script>
+
+<!-- カルーセル -->
+    <script type="text/x-handlebars-template" id="book-list-carousel">
+      {{#each this}}
+      <div>
+        <div class="book_detail_before"></div>
+        <div class="book_detail"> 
+          <table class="book_info"> 
+            <tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>
+              <tr>
+                <td class="book_big_image" style="background-image:url('{{MediumImageURL}}'); background-size: contain; background-repeat:no-repeat;"></td> 
+                <td><a href="#"><img src="/images/koreyomo.png"></a></td>
+              </tr>
+              <tr> 
+                <td class="heading_td">タイトル：</td>
+                <td colspan="2">{{Title}}</td> 
+              </tr>
+              <tr> 
+                <td class="heading_td">作：</td> 
+                <td>{{Author}}</td> 
+              </tr> 
+              <tr> 
+                <td class="heading_td">蔵書図書館：</td> 
+                <td> 
+                  <div class="lib_icon">
+                    {{{HtmlRentaledIconsHtml}}}
+                    {{{HtmlRecommendedHtml}}}
+                  </div>
+                </td> 
+              </tr> 
+              <tr> 
+                <td></td> 
+                <td>
+                  <a href="#"><input type="button" value="この本を買う" onclick=""></a>
+                  <div class="rakuten"><!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+                    <a href="http://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
+                    <!-- Rakuten Web Services Attribution Snippet TO HERE -->
+                  </div>
+                </td> 
+              </tr>
+            </table> 
+          </div> 
+        </div>
+      </div>
+      {{/each}}
+    </script>
 </body>
 </html>

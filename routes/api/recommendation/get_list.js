@@ -97,7 +97,7 @@ var BookInfo = function( ){
     this.Title = "初期値";             //書名
     this.Author = "初期値";            //著者名
     this.publisherName = "初期値";     //出版社名
-    this.MidiumImageURL = "http:";
+    this.MediumImageURL = "http:";
     this.SmallImageURL = "http";
 
     this.rakutenURL = "";           //楽天ページへのURL
@@ -561,7 +561,7 @@ function debug_print_console_log( ){
         console.log("Title = " + booklist[j].Title);
         console.log("Author = " + booklist[j].Author);
         console.log("publisherName = " + booklist[j].publisherName);
-        console.log("IMAGE_URL(M) = " + booklist[j].MidiumImageURL);
+        console.log("IMAGE_URL(M) = " + booklist[j].MediumImageURL);
         console.log("RAKUTEN_URL = " + booklist[j].rakutenURL);
         console.log("IsCityLib = " + booklist[j].IsCityLib);
         //console.log("IsCityLibRentaledNum = " + booklist[j].IsCityLibRentaledNum);
@@ -595,7 +595,7 @@ function debug_print_console_log( ){
         console.log("Title = " + booklist[j].Title);
         console.log("Author = " + booklist[j].Author);
         console.log("publisherName = " + booklist[j].publisherName);
-        console.log("IMAGE_URL(M) = " + booklist[j].MidiumImageURL);
+        console.log("IMAGE_URL(M) = " + booklist[j].MediumImageURL);
         console.log("RAKUTEN_URL = " + booklist[j].rakutenURL);
         console.log("IsCityLib = " + booklist[j].IsCityLib);
         //console.log("IsCityLibRentaledNum = " + booklist[j].IsCityLibRentaledNum);

@@ -172,14 +172,14 @@ function parse_and_set_rakuten_data( json, booklist ){
         }
         
         //サムネイル画像
-        if( _.has( json.Items[i].Item, 'largeImageUrl') ){  //指定検索の場合は大サムネイル画像有。midiumに入れる
-            booklist[i].MidiumImageURL = json.Items[i].Item.largeImageUrl;
+        if( _.has( json.Items[i].Item, 'largeImageUrl') ){  //指定検索の場合は大サムネイル画像有。Mediumに入れる
+            booklist[i].MediumImageURL = json.Items[i].Item.largeImageUrl;
         } 
         else if( _.has( json.Items[i].Item, 'mediumImageUrl') ){
-            booklist[i].MidiumImageURL = json.Items[i].Item.mediumImageUrl;
+            booklist[i].MediumImageURL = json.Items[i].Item.mediumImageUrl;
         }      
         else if( _.has( json.Items[i].Item, 'mediumImageUrls') ){
-            booklist[i].MidiumImageURL = json.Items[i].Item.mediumImageUrls[0].imageUrl;
+            booklist[i].MediumImageURL = json.Items[i].Item.mediumImageUrls[0].imageUrl;
         }
         
         if( _.has( json.Items[i].Item, 'smallImageUrl') ){
@@ -220,11 +220,11 @@ function parse_and_set_rakuten_data( json, booklist ){
         }
                 
         //サムネイル画像
-        if( _.has( json.Items[i], 'largeImageUrl') ){  //指定検索の場合は大サムネイル画像有。midiumに入れる
-            booklist[i].MidiumImageURL = json.Items[i].largeImageUrl;
+        if( _.has( json.Items[i], 'largeImageUrl') ){  //指定検索の場合は大サムネイル画像有。Mediumに入れる
+            booklist[i].MediumImageURL = json.Items[i].largeImageUrl;
         } 
         else if( _.has( json.Items[i], 'mediumImageUrl') ){
-            booklist[i].MidiumImageURL = json.Items[i].mediumImageUrl;
+            booklist[i].MediumImageURL = json.Items[i].mediumImageUrl;
         }      
 
         
@@ -653,7 +653,7 @@ function debug_print_console_log2( booklist ){
         console.log("Author = " + booklist[i].Author);
         console.log("ISBN = " + booklist[i].Isbn);
         console.log("RAKUTEN_URL = " + booklist[i].rakutenURL);
-        console.log("IMAGE_URL(M) = " + booklist[i].MidiumImageURL);
+        console.log("IMAGE_URL(M) = " + booklist[i].MediumImageURL);
     }
     */
     
@@ -663,13 +663,13 @@ function debug_print_console_log2( booklist ){
         console.log("Author = " + booklist[0].Author);
         console.log("ISBN = " + booklist[0].Isbn);
         console.log("RAKUTEN_URL = " + booklist[0].rakutenURL);
-        console.log("IMAGE_URL(M) = " + booklist[0].MidiumImageURL);
+        console.log("IMAGE_URL(M) = " + booklist[0].MediumImageURL);
 
         console.log("=====29番目出力=====");
         console.log("Title = " + booklist[29].Title);
         console.log("Author = " + booklist[29].Author);
         console.log("ISBN = " + booklist[29].Isbn);
         console.log("RAKUTEN_URL = " + booklist[29].rakutenURL);
-        console.log("IMAGE_URL(M) = " + booklist[29].MidiumImageURL);
+        console.log("IMAGE_URL(M) = " + booklist[29].MediumImageURL);
 
 }
