@@ -211,5 +211,61 @@
       </div>
       {{/each}}
     </script>
+    
+    <!-- 詳細表示 -->
+    <script type="text/x-handlebars-template" id="go-to-detail">
+      <div class="book_detail_before"></div>
+        <div class="book_detail"> 
+          <table class="book_info"> 
+            <tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>
+            <tr> 
+              <td class="book_big_image" style="background-image:url('{{imageUrl}}'); background-size: contain; background-repeat:no-repeat;">
+              {{#if cityLibRecommended}}
+                <div id="recommend">
+                  <a href="#open_recommend"><img src="/images/recommend.png" ></a>
+                  <div id="modal">
+                    <div id="open_recommend"> 
+                      <a href="#" class="close_overlay">×</a> 
+                      <div class="modal_window">
+                        <h2>生駒図書館司書おすすめ</h2> 
+                        <p>{{cityLibComment}}</p>
+                        <a href="#"><img src="/images/close.png" ></a> 
+                      </div><!--/.modal_window-->
+                    </div><!--/#open01-->
+                  </div><!--/#modal-->
+                </div><!--/#recommend-->
+              {{/if}}
+              </td>
+              <td> 
+                <a href="#"><img src="/images/koreyomo.png"></a> 
+              </td> 
+            </tr> 
+            <tr> 
+              <td class="heading_td">タイトル：</td> 
+              <td colspan="2">{{title}}</td> 
+            </tr> 
+            <tr> 
+              <td class="heading_td">作：</td> 
+              <td>{{author}}</td> 
+            </tr> 
+            <tr> 
+              <td class="heading_td">蔵書図書館：</td> 
+              <td id="target_of_calil_result"></td> 
+            </tr> 
+            <tr> 
+              <td></td> 
+              <td>
+                <a href="#"><input type="button" value="この本を買う" onclick=""></a>
+                <div class="rakuten"><!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+                  <a href="http://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>
+                  <!-- Rakuten Web Services Attribution Snippet TO HERE -->
+                </div>
+              </td> 
+            </tr>
+          </table> 
+        </div> 
+        <a onClick="returnToSearchResult()"><img class="back" src="/images/back.png"></a>
+      </div>
+    </script>
 </body>
 </html>

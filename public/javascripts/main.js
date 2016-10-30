@@ -164,70 +164,21 @@ var goToSettings = function() {
 var goToDetail = function(obj) {
     var result = $("#result");
     result.hide();
-    var main = $("#main");
-    var title = obj.getAttribute('alt');
-    var author = obj.getAttribute('author');
-    var isbn = obj.getAttribute('isbn');
-    var imageUrl = obj.getAttribute('src');
-    var cityLibRecommended = obj.getAttribute('CityLibRecommended');
-    var cityLibComment = obj.getAttribute('CityLibComment');
-
-    var html_string = '<div class="book_detail_before"></div>' +
-                        '<div class="book_detail">' + 
-                            '<table class="book_info">' + 
-                                '<tr><td colspan="2"><span class="recom_comment">↓オススメ本をクリックすると図書館司書さんからの紹介文が読めます！</span></td></tr>' +
-                                '<tr>' + 
-                                '<td class="book_big_image" style="background-image:url(' + imageUrl + '); background-size: contain; background-repeat:no-repeat;">';
-    if (cityLibRecommended == 1) {
-        html_string +=              '<div id="recommend">' +
-                                        '<a href="#open_recommend"><img src="/images/recommend.png" ></a>' +
-                                        '<div id="modal">' +
-                                            '<div id="open_recommend">' + 
-                                                '<a href="#" class="close_overlay">×</a>' + 
-                                                '<div class="modal_window">' +
-                                                    '<h2>生駒図書館司書おすすめ</h2>' + 
-                                                    '<p>' + cityLibComment  + '</p>' +
-                                                    '<a href="#"><img src="/images/close.png" ></a>' + 
-                                                '</div><!--/.modal_window-->'+ 
-                                            '</div><!--/#open01-->'+
-                                        '</div><!--/#modal-->' +
-                                    '</div><!--/#recommend-->';
+    var items ={
+        title : obj.getAttribute('alt'),
+        author : obj.getAttribute('author'),
+        isbn : obj.getAttribute('isbn'),
+        imageUrl : obj.getAttribute('src'),
+        cityLibRecommended : obj.getAttribute('CityLibRecommended'),
+        cityLibComment : obj.getAttribute('CityLibComment'),
     }
-    html_string +=              '</td>' + 
-                                    '<td>' + 
-                                        '<a href="#"><img src="/images/koreyomo.png"></a>' + 
-                                    '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td class="heading_td">タイトル：</td>' + 
-                                    '<td colspan="2">'+ title + '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td class="heading_td">作：</td>' + 
-                                    '<td>' + author + '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td class="heading_td">蔵書図書館：</td>' + 
-                                    '<td id="target_of_calil_result">' +
-                                    '</td>' + 
-                                '</tr>' + 
-                                '<tr>' + 
-                                    '<td></td>' + 
-                                    '<td>' +
-                                        '<a href="#"><input type="button" value="この本を買う" onclick=""></a>' +
-                                        '<div class="rakuten"><!-- Rakuten Web Services Attribution Snippet FROM HERE -->' +
-                                            '<a href="http://webservice.rakuten.co.jp/" target="_blank">Supported by 楽天ウェブサービス</a>' +
-                                            '<!-- Rakuten Web Services Attribution Snippet TO HERE -->' +
-                                        '</div>' +
-                                    '</td>' + 
-                                '</tr>' +
-                            '</table>' + 
-                        '</div>' + 
-                        '<a onClick="returnToSearchResult()"><img class="back" src="/images/back.png"></a>' +
-                      '</div>';
 
-    main.append(html_string);
-    ajaxCalil(isbn);
+    var source = $("#go-to-detail").html();
+    var template = Handlebars.compile(source);
+    var html = template(items);
+    $("#main").append(html);
+
+    ajaxCalil(obj.getAttribute('isbn'));
 };
 
 var getHtmlRentaledIcons = function(info) {
